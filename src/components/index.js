@@ -3,7 +3,8 @@ import Header from './header';
 // import Footer from './footer';
 import Link from './link';
 import Seo from './seo';
-// import Sidebar from './sidebar';
+import Sidebar from './sidebar';
+import Previewer from './previewer';
 
 import Layout from './layouts/default-layout';
 
@@ -13,6 +14,7 @@ export {
   Header,
   Layout,
   Link,
-  Seo
-  // Sidebar
+  Seo,
+  Sidebar,
+  Previewer
 };

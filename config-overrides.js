@@ -19,8 +19,11 @@ module.exports = override(
   }),
   addWebpackAlias({
     ['components']: path.resolve(__dirname, 'src/components'),
+    ['forms']: path.resolve(__dirname, 'src/components/forms'),
+    ['layouts']: path.resolve(__dirname, 'src/components/layouts'),
     ['hooks']: path.resolve(__dirname, 'src/hooks'),
     ['pages']: path.resolve(__dirname, 'src/pages'),
+    ['parser']: path.resolve(__dirname, 'src/parser'),
     ['services']: path.resolve(__dirname, 'src/services')
   })
 );

@@ -1,26 +1,14 @@
-import React, { useState } from 'react';
-import { auth, firestore } from 'services/firebase';
+import React from 'react';
+import { auth } from 'services/firebase';
+import { useHistory } from 'react-router-dom';
 
-import {
-  useHistory,
-  useLocation,
-  useParams
-} from 'react-router-dom';
-
-import { Layout, Row, Col, Menu, Icon, Dropdown, Button } from 'antd';
+import { Layout, Row, Menu, Icon, Dropdown, Button } from 'antd';
 import { orange } from '@ant-design/colors';
 
 const { Header } = Layout;
 
 const PageHeader = ({ user }) => {
   const history = useHistory();
-  const location = useLocation();
-  const params = useParams();
-
-  console.log(history);
-  console.log(location);
-  console.log(params);
-
 
   const menu = (
     <Menu style={{ padding: 16 }}>

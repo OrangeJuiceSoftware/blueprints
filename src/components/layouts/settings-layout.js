@@ -1,27 +1,28 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useHistory } from 'react-router-dom';
 
 import { Layout, Menu, Icon } from 'antd';
-const { Content } = Layout;
 import { Sidebar } from 'components';
 
+const { Content } = Layout;
+
 const routes = [
-  { route: '/settings/account', displayText: 'Account', icon: 'smile' },
-  { route: '/settings/organizations', displayText: 'Organizations', icon: 'team' },
-  { route: '/settings/billing', displayText: 'Billing', icon: '' }
+  { id: 'account', route: '/settings/account', displayText: 'Account', icon: 'smile' },
+  { id: 'organization', route: '/settings/organizations', displayText: 'Organizations', icon: 'team' },
+  { id: 'billing', route: '/settings/billing', displayText: 'Billing', icon: 'team' }
 ];
 
-const SettingsLayout = ({ children }) => {
-  const router = useRouter();
+const SettingsLayout = ({ children, selectedID }) => {
+  const history = useHistory();
 
   return (
     <Layout>
       <Sidebar>
-        <Menu style={{ borderRight: 'none' }} defaultSelectedKeys={[router.asPath]} mode={'inline'}>
+        <Menu style={{ borderRight: 'none' }} defaultSelectedKeys={[selectedID]} mode={'inline'}>
 
-          {routes.map(({ route, icon, displayText }) => {
+          {routes.map(({ route, icon, displayText, id }) => {
             return (
-              <Menu.Item key={route} onClick={() => route !== router.asPath && router.push(route)}>
+              <Menu.Item key={id} onClick={() => id !== selectedID && history.push(route)}>
                 <Icon type={icon}/>
                 <span>{displayText}</span>
               </Menu.Item>

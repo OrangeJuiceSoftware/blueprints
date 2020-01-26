@@ -2,8 +2,7 @@ import React from 'react';
 import {
   BrowserRouter,
   Switch,
-  Route,
-  Link
+  Route
 } from 'react-router-dom';
 
 import App from './_app';
@@ -32,6 +31,7 @@ const Router = () => {
         <Switch>
           {routes.map((route) => (
             <Route
+              exact
               key={route.path}
               path={route.path}
               render={props => (
