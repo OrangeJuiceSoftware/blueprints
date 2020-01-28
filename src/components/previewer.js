@@ -4,7 +4,7 @@ import unified from 'unified';
 
 // Unified plugins
 import html from 'remark-html';
-import markdown from 'remark-parse';
+import markdownParse from 'remark-parse';
 import mermaidRmk from '../parser';
 // import remark2react from 'remark-react';
 
@@ -12,16 +12,16 @@ mermaid.initialize({
   startOnLoad: true
 });
 
-export default ({ rawMarkdown }) => {
+export default ({ markdown }) => {
   const [result, setResult] = useState();
 
   useEffect(() => {
     const processor = unified()
-      .use(markdown)
+      .use(markdownParse)
       .use(mermaidRmk)
       .use(html);
 
-    processor.process(rawMarkdown, (err, file) => {
+    processor.process(markdown, (err, file) => {
       if (err) {
         return console.log(err);
       }
@@ -29,7 +29,7 @@ export default ({ rawMarkdown }) => {
       setResult(file.contents);
     });
 
-  }, [rawMarkdown]);
+  }, [markdown]);
 
   useEffect(() => {
     try {

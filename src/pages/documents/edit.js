@@ -1,128 +1,101 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
+
 import { firestore } from 'services/firebase';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
 
 import { Layout, Previewer, Seo } from 'components';
+import { Button, Col, PageHeader, Modal } from 'antd';
 
-import { Col } from 'antd';
+const Documents = ({ match, user }) => {
+  const documentRef = firestore.collection('files').doc(match.params.documentID);
 
-const sampleMarkDown = `
-# This is a header And
-this is a paragraph
+  const [document, loading, error] = useDocumentDataOnce(documentRef);
 
-\`\`\`mermaid
-graph TD
-  A[Christmas] -->|Get money| B(Go shopping)
-  B --> C{Let me think}
-  C -->|One| D[Laptop]
-  C -->|Two| E[iPhone]
-  C -->|Three| F[fa:fa-car Car]
-\`\`\`
+  const [showPreview, setShowPreview] = useState(false);
+  const [localMarkdown, setLocalMarkdown] = useState();
 
-\`\`\`mermaid
-classDiagram
-  Animal <|-- Duck
-  Animal <|-- Fish
-  Animal <|-- Zebra
-  Animal : +int age
-  Animal : +String gender
-  Animal: +isMammal()
-  Animal: +mate()
-  class Duck{
-    +String beakColor
-    +swim()
-    +quack()
+
+  const openPreview = () => {
+    setShowPreview(true);
+  };
+
+  const closePreview = () => {
+    setShowPreview(false);
+  };
+
+  const updateDocument = async (newMarkdown, event) => {
+    try {
+      setLocalMarkdown(newMarkdown);
+      // await documentRef.update({
+      //   markdown: newMarkdown
+      // });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  // waiting on react suspense to do this part better
+  if(loading) {
+    return <p>loading</p>;
   }
-  class Fish{
-    -int sizeInFeet
-    -canEat()
-  }
-  class Zebra{
-    +bool is_wild
-    +run()
-  }			
-\`\`\`
-
-\`\`\`mermaid
-sequenceDiagram
-  Alice->>+John: Hello John, how are you?
-  Alice->>+John: John, can you hear me?
-  John-->>-Alice: Hi Alice, I can hear you!
-  John-->>-Alice: I feel great!
-\`\`\`
-
-\`\`\`mermaid
-stateDiagram
-  [*] --> Still
-  Still --> [*]
-
-  Still --> Moving
-  Moving --> Still
-  Moving --> Crash
-  Crash --> [*]
-\`\`\`
-
-\`\`\`mermaid
-pie 
-  title Pets adopted by volunteers
-  "Dogs" : 386
-  "Cats" : 85
-  "Rats" : 15           
-\`\`\`
-
-\`\`\`mermaid
-gantt
-  dateFormat  YYYY-MM-DD
-  title Adding GANTT diagram functionality to mermaid
-
-  section A section
-  Completed task            :done,    des1, 2014-01-06,2014-01-08
-  Active task               :active,  des2, 2014-01-09, 3d
-  Future task               :         des3, after des2, 5d
-  Future task2              :         des4, after des3, 5d
-\`\`\`
-
-\`\`\`
-const kill me 
-\`\`\`
-`;
-
-const Documents = ({ user }) => {
-  const [rawMarkdown, setRawMarkdown] = useState(sampleMarkDown);
 
   return (
     <Layout>
       <Seo title={'Documents'}/>
 
-      <Col span={12}>
+      <PageHeader
+        style={{
+          border: '1px solid rgb(235, 237, 240)'
+        }}
+        title="Title"
+        subTitle="This is a subtitle"
+        extra={[
+          <Button key={'1'} type="primary" icon="search" onClick={openPreview}>
+              Preview
+          </Button>
+        ]}
+      />
+
+      <Col span={16}>
         <AceEditor
-          // onLoad={this.onLoad}
+          style={{ width: '100%', height: 'calc(100vh - 64px)' }}
           fontSize={14}
           highlightActiveLine={true}
           mode={'markdown'}
-          name={'blah2'}
-          onChange={setRawMarkdown}
-          debounceChangePeriod={50}
-          placeholder={'Placeholder Text'}
-          showGutter={true}
-          showPrintMargin={true}
+          onChange={updateDocument}
+          debounceChangePeriod={750}
+          showPrintMargin={false}
           theme={'github'}
-          value={rawMarkdown}
+          value={localMarkdown}
+          onLoad={() => {
+            // no crazzzy about this. Can't decide if the editor should fire up the preview or the component render should
+            setLocalMarkdown(document.markdown);
+          }}
           setOptions={{
-            // enableBasicAutocompletion: false,
-            // enableLiveAutocompletion: false,
-            // enableSnippets: false,
-            // showLineNumbers: true,
             // tabSize: 2
           }}/>
       </Col>
 
-      <Col span={12}>
-        <Previewer rawMarkdown={rawMarkdown}/>
+      <Col span={8}>
+        this will be the markdown cheat sheet
       </Col>
+
+      <Modal
+        title="Preview"
+        width={'80%'}
+        visible={showPreview}
+        onOk={closePreview}
+        onCancel={closePreview}>
+
+        {/* dont want this running unless it is visible */}
+        {showPreview && <Previewer markdown={localMarkdown}/>}
+      </Modal>
+
+
     </Layout>
   );
 };
