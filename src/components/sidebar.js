@@ -9,7 +9,7 @@ const Sidebar = ({ children, width, style }) => {
   return (
     <Sider theme={'light'} width={width || defaultWidth} style={{
       overflow: 'auto',
-      height: 'calc(100vh - 64px)',
+      height: 'calc(100vh - 40px)',
       ...style }}>
       {children}
     </Sider>

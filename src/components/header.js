@@ -3,7 +3,7 @@ import { auth } from 'services/firebase';
 import { useHistory } from 'react-router-dom';
 
 import { Layout, Row, Menu, Icon, Dropdown, Button } from 'antd';
-import { orange } from '@ant-design/colors';
+import { geekblue } from '@ant-design/colors';
 
 const { Header } = Layout;
 
@@ -27,17 +27,18 @@ const PageHeader = ({ user }) => {
   return (
     <Header style={{ padding: 0 }}>
       <Row type={'flex'} align={'middle'} justify={'space-between'}>
+
         <div style={{
-          height: 32,
-          width: 218,
-          background: orange[5],
-          margin: 16
+          height: 20,
+          width: 150,
+          background: geekblue[0],
+          margin: 10
         }}/>
 
-        {user&& <Row style={{ margin: '0 16px' }}>
+        {user&& <Row style={{ margin: '0 10px' }}>
           <Dropdown trigger={['click']} overlay={menu}>
-            <Button size={'large'}>
-              <Icon style={{ fontSize: 20 }} type="user" />
+            <Button size={'small'}>
+              <Icon style={{ fontSize: 16 }} type="user" />
             </Button>
           </Dropdown>
         </Row>}

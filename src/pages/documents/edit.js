@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
@@ -26,12 +26,12 @@ const Documents = ({ match, user }) => {
     setShowPreview(false);
   };
 
-  const updateDocument = async (newMarkdown, event) => {
+  const updateDocument = async (newMarkdown) => {
     try {
       setLocalMarkdown(newMarkdown);
-      // await documentRef.update({
-      //   markdown: newMarkdown
-      // });
+      await documentRef.update({
+        markdown: newMarkdown
+      });
     } catch (error) {
       console.log(error);
     }
@@ -62,7 +62,7 @@ const Documents = ({ match, user }) => {
 
       <Col span={16}>
         <AceEditor
-          style={{ width: '100%', height: 'calc(100vh - 64px)' }}
+          style={{ width: '100%', height: 'calc(100vh - 40px)' }}
           fontSize={14}
           highlightActiveLine={true}
           mode={'markdown'}

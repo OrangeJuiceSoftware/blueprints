@@ -12,7 +12,7 @@ mermaid.initialize({
   startOnLoad: true
 });
 
-export default ({ markdown }) => {
+export default ({ markdown = '' }) => {
   const [result, setResult] = useState();
 
   useEffect(() => {

@@ -32,7 +32,7 @@ const SettingsLayout = ({ children, selectedID }) => {
         </Menu>
       </Sidebar>
 
-      <Layout style={{ overflow: 'auto', height: 'calc(100vh - 64px)' }}>
+      <Layout style={{ overflow: 'auto', height: 'calc(100vh - 40px)' }}>
         <Content style={{ margin: '0' }}>
           {children}
         </Content>

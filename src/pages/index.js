@@ -4,6 +4,7 @@ import Signup from './signup';
 
 import Documents from './documents';
 import DocumentsEdit from './documents/edit';
+import DocumentsView from './documents/view';
 
 import SettingsAccount from './settings/account';
 import SettingsBilling from './settings/billing';
@@ -15,6 +16,7 @@ export {
   Signup,
   Documents,
   DocumentsEdit,
+  DocumentsView,
   SettingsAccount,
   SettingsBilling,
   SettingsOrganizations

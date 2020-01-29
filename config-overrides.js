@@ -6,6 +6,7 @@ const {
 } = require('customize-cra');
 
 const path = require('path');
+const { geekblue } = require('@ant-design/colors');
 
 module.exports = override(
   fixBabelImports('import', {
@@ -15,7 +16,12 @@ module.exports = override(
   }),
   addLessLoader({
     javascriptEnabled: true,
-    modifyVars: { '@primary-color': '#1DA57A' }
+    // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+    modifyVars: {
+      '@primary-color': geekblue[5],
+      '@layout-header-height': '40px',
+      '@layout-header-background': geekblue[5]
+    }
   }),
   addWebpackAlias({
     ['components']: path.resolve(__dirname, 'src/components'),
