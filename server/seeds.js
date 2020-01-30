@@ -37,7 +37,7 @@ const seedFunction = async () => {
       // 'Af29j2f0sF4wfefwe3rw': firestore.collection('teams').doc('Af29j2f0sF4wfefwe3rw')
     },
     collaborators: {
-      'DiNO4M1YsgPgm8hg3c5m': firestore.collection('users').doc('P8VSjFSeduaoP3ELW3V6UuA9erR2')
+      'P8VSjFSeduaoP3ELW3V6UuA9erR2': firestore.collection('users').doc('P8VSjFSeduaoP3ELW3V6UuA9erR2')
     }
   });
 
@@ -57,15 +57,34 @@ const seedFunction = async () => {
     const fileDoc = await firestore.collection('files').add({
       workspaceRef: personalWorkSpaceDoc,
       parentRef: null,
-      userID: 'DiNO4M1YsgPgm8hg3c5m',
+      userID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
       name: `My File ${number}`
     });
 
-    // await fileDoc.directoryDoc('files').add({
-    //   workspace: personalWorkSpaceDoc,
-    //   parentRef: fileDoc,
-    //   name: `My Sub Files ${number}`
-    // });
+    [1, 2, 3, 4, 5].forEach(async (number) => {
+      const commentRef = await fileDoc.collection('comments').add({
+        workspace: personalWorkSpaceDoc,
+        parentRef: null,
+        content: 'some toxic feedback about this scumbags blueprint',
+        authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
+        avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+
+      [1, 2].forEach(async (number) => {
+        await fileDoc.collection('comments').add({
+          workspace: personalWorkSpaceDoc,
+          parentRef: commentRef,
+          content: 'This is the best way I think.',
+          authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
+          avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
+          createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      });
+
+
+    });
+
   });
 };
 
@@ -73,4 +92,3 @@ const seedFunction = async () => {
 seedFunction().then(() => {
   console.log('done');
 });
-

@@ -1,4 +1,5 @@
 // import Editor from './Editor';
+import CommentList from './comment-list';
 import Header from './header';
 // import Footer from './footer';
 import Link from './link';
@@ -11,6 +12,7 @@ import Layout from './layouts/default-layout';
 export {
   // Editor,
   // Footer,
+  CommentList,
   Header,
   Layout,
   Link,

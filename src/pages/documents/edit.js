@@ -86,7 +86,7 @@ const Documents = ({ match, user }) => {
 
       <Modal
         title="Preview"
-        width={'80%'}
+        width={'66.6%'}
         visible={showPreview}
         onOk={closePreview}
         onCancel={closePreview}>

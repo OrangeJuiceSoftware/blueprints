@@ -35,20 +35,21 @@ const Documents = ({ user }) => {
       <Row gutter={[24, 24]} style={{ margin: 24 }}>
         {documents && documents.map((document) => (
           <Col key={document.id} span={6}>
-            <Link to={`documents/${document.id}/view`}>
-              <Card title={document.name} actions={[
-                <Icon type="setting" key="setting" />,
-                <Link key="edit" to={`documents/${document.id}/edit`}>
-                  <Icon type="edit" />
-                </Link>,
-                <Icon type="ellipsis" key="ellipsis" />
-              ]}>
+            {/* can't nest a tags apparently.... */}
+            <Card title={<Link to={`documents/${document.id}/view`}>{document.name}</Link>} actions={[
+              <Icon type="setting" key="setting" />,
+              <Link key="edit" to={`documents/${document.id}/edit`}>
+                <Icon type="edit" />
+              </Link>,
+              <Icon type="ellipsis" key="ellipsis" />
+            ]}>
+              <Link to={`documents/${document.id}/view`}>
                 <p>Card content</p>
                 <p>Card content</p>
                 <p>Card content</p>
-              </Card>
+              </Link>
+            </Card>
 
-            </Link>
           </Col>
         ))}
       </Row>
