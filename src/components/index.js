@@ -3,9 +3,9 @@ import CommentList from './comment-list';
 import Header from './header';
 // import Footer from './footer';
 import Link from './link';
+import Previewer from './previewer';
 import Seo from './seo';
 import Sidebar from './sidebar';
-import Previewer from './previewer';
 
 import Layout from './layouts/default-layout';
 
@@ -16,7 +16,7 @@ export {
   Header,
   Layout,
   Link,
+  Previewer,
   Seo,
-  Sidebar,
-  Previewer
+  Sidebar
 };

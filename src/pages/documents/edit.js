@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
@@ -11,7 +11,6 @@ import { Button, Col, PageHeader, Modal } from 'antd';
 
 const Documents = ({ match, user }) => {
   const documentRef = firestore.collection('files').doc(match.params.documentID);
-
   const [document, loading, error] = useDocumentDataOnce(documentRef);
 
   const [showPreview, setShowPreview] = useState(false);
@@ -37,7 +36,6 @@ const Documents = ({ match, user }) => {
     }
   };
 
-
   // waiting on react suspense to do this part better
   if(loading) {
     return <p>loading</p>;
@@ -54,8 +52,12 @@ const Documents = ({ match, user }) => {
         title="Title"
         subTitle="This is a subtitle"
         extra={[
-          <Button key={'1'} type="primary" icon="search" onClick={openPreview}>
+          <Button key={'preview'} type="secondary" icon="search" onClick={openPreview}>
               Preview
+          </Button>,
+
+          <Button key={'review'} type="primary" onClick={openPreview}>
+            Review
           </Button>
         ]}
       />

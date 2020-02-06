@@ -3,9 +3,15 @@ import React from 'react';
 import { Layout } from 'antd';
 const { Content } = Layout;
 
-const PageLayout = ({ children }) => {
+const PageLayout = ({ children, style, ...props }) => {
+  const mergedStyle = {
+    ...style,
+    overflow: 'auto',
+    height: 'calc(100vh - 40px)'
+  };
+
   return (
-    <Layout style={{ overflow: 'auto', height: 'calc(100vh - 40px)' }}>
+    <Layout {...props} style={mergedStyle}>
       <Content style={{ margin: '0' }}>
         {children}
       </Content>

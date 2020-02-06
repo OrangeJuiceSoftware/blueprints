@@ -1,32 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { firestore } from 'services/firebase';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useHistory } from 'react-router-dom';
 
-import { Seo } from 'components';
+import { Link, Seo } from 'components';
 
 import Layout from 'layouts/sidebar-layout';
-import { Card, Col, Icon, Menu, Row } from 'antd';
+import { Button, Card, Col, Icon, Menu, Row } from 'antd';
 
-import { Link } from 'react-router-dom';
+const Documents = ({ user, location }) => {
+  const history = useHistory();
 
-const generateSidebarItems = () => {
-  return (
-    <Menu style={{ borderRight: 'none' }} defaultSelectedKeys={[1]} mode={'inline'}>
-      <Menu.Item key={1}>
-        <Icon type={'team'}/>
-        <span>hiohioshsoif</span>
-      </Menu.Item>
-    </Menu>
-  );
-};
-
-const Documents = ({ user }) => {
-  // get workspaces
+  // get projects
   // get directories
   const [documents, loading, error] = useCollectionData(firestore.collection('files').where('userID', '==', user.uid), { idField: 'id' });
 
-  console.log(documents);
+  const generateSidebarItems = () => {
+    return (
+      <>
+        <Link to={'/documents/new'}>
+          <Button type="primary" shape="round" icon="plus" size={'large'} style={{ margin: 16 }}>
+            New
+          </Button>
+        </Link>
+
+        <Menu style={{ borderRight: 'none' }} defaultSelectedKeys={['1']} mode={'inline'}>
+          <Menu.Item key={1}>
+            <Icon type={'team'}/>
+            <span>hiohioshsoif</span>
+          </Menu.Item>
+        </Menu>
+      </>
+    );
+  };
 
   return (
     <Layout sidebarItems={generateSidebarItems()}>
@@ -34,10 +41,10 @@ const Documents = ({ user }) => {
 
       <Row gutter={[24, 24]} style={{ margin: 24 }}>
         {documents && documents.map((document) => (
-          <Col key={document.id} span={6}>
+          <Col key={document.id} span={4}>
             {/* can't nest a tags apparently.... */}
-            <Card title={<Link to={`documents/${document.id}/view`}>{document.name}</Link>} actions={[
-              <Icon type="setting" key="setting" />,
+            <Card hoverable title={<Link to={`documents/${document.id}/view`}>{document.name}</Link>} actions={[
+              <Icon type="copy" key="copy" />,
               <Link key="edit" to={`documents/${document.id}/edit`}>
                 <Icon type="edit" />
               </Link>,

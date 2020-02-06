@@ -3,18 +3,18 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 
 import { Avatar, Button, Card, Col, Comment, Form, Input, List, Skeleton } from 'antd';
 
-
-const LoadingComments = () => {
-  return (
-    <Card>
-      <List itemLayout="vertical" size="large" dataSource={[3, 1]} renderItem={item => (
-        <List.Item>
-          <Skeleton avatar paragraph={{ rows: item }} />
-        </List.Item>
-      )}/>
-    </Card>
-  );
-};
+////////////////////////////
+///// Local Components /////
+////////////////////////////
+const LoadingComments = () => (
+  <Card>
+    <List itemLayout="vertical" size="large" dataSource={[3, 1]} renderItem={item => (
+      <List.Item>
+        <Skeleton avatar paragraph={{ rows: item }} />
+      </List.Item>
+    )}/>
+  </Card>
+);
 
 const Editor = ({ onChange, onSubmit, submitting, value }) => (
   <div>
@@ -43,15 +43,8 @@ const NestedComments = ({ commentsRef, commentRef, onCreate }) => {
     return commentData;
   });
 
-  if (!commentsData.length) {
-    return <></>;
-  }
-
-  console.log(commentsData);
-
-
   return (<>
-    {commentsData.map((item) => (
+    {commentsData.length && commentsData.map((item) => (
       <Comment
         key={item.ref.path}
         actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
@@ -65,6 +58,11 @@ const NestedComments = ({ commentsRef, commentRef, onCreate }) => {
     ))}
   </>);
 };
+
+////////////////////////////
+///// Local Components /////
+////////////////////////////
+
 
 const CommentsList = ({ commentsRef, commonCreate }) => {
   const [commentsQuerySnapshot, loadingComments, errorComments] = useCollection(commentsRef.where('parentRef', '==', null));
@@ -84,7 +82,6 @@ const CommentsList = ({ commentsRef, commonCreate }) => {
 
     return commentData;
   });
-
 
   return (
     <Card>
@@ -111,6 +108,5 @@ const CommentsList = ({ commentsRef, commonCreate }) => {
     </Card>
   );
 };
-
 
 export default CommentsList;

@@ -25,6 +25,7 @@ const Router = () => {
     return;
   }
 
+  // private routes?
   return (
     <BrowserRouter>
       <App user={user}>
