@@ -3,9 +3,9 @@ import { useCollection } from 'react-firebase-hooks/firestore';
 
 import { Avatar, Button, Card, Col, Comment, Form, Input, List, Skeleton } from 'antd';
 
-////////////////////////////
-///// Local Components /////
-////////////////////////////
+//////////////////////////////////
+///// Start Local Components /////
+//////////////////////////////////
 const LoadingComments = () => (
   <Card>
     <List itemLayout="vertical" size="large" dataSource={[3, 1]} renderItem={item => (
@@ -44,7 +44,7 @@ const NestedComments = ({ commentsRef, commentRef, onCreate }) => {
   });
 
   return (<>
-    {commentsData.length && commentsData.map((item) => (
+    {Boolean(commentsData.length) && commentsData.map((item) => (
       <Comment
         key={item.ref.path}
         actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
@@ -59,10 +59,9 @@ const NestedComments = ({ commentsRef, commentRef, onCreate }) => {
   </>);
 };
 
-////////////////////////////
-///// Local Components /////
-////////////////////////////
-
+////////////////////////////////
+///// End Local Components /////
+////////////////////////////////
 
 const CommentsList = ({ commentsRef, commonCreate }) => {
   const [commentsQuerySnapshot, loadingComments, errorComments] = useCollection(commentsRef.where('parentRef', '==', null));
@@ -82,6 +81,10 @@ const CommentsList = ({ commentsRef, commonCreate }) => {
 
     return commentData;
   });
+
+  const submitComment = () => {
+
+  };
 
   return (
     <Card>
@@ -104,6 +107,7 @@ const CommentsList = ({ commentsRef, commonCreate }) => {
           </List.Item>
         )}
       />
+
       <Editor/>
     </Card>
   );
