@@ -3,15 +3,14 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
 
-import { firestore } from 'services/firebase';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+import useDocument from 'firehooks/useDocument';
 
 import { Layout, Previewer, Seo } from 'components';
 import { Button, Col, PageHeader, Modal } from 'antd';
 
 const Documents = ({ match, user }) => {
-  const documentRef = firestore.collection('files').doc(match.params.documentID);
-  const [document, loading, error] = useDocumentDataOnce(documentRef);
+  const [document, loading, error, { updateDocumentContent }] = useDocument(match.params.documentID);
+
 
   const [showPreview, setShowPreview] = useState(false);
   const [localMarkdown, setLocalMarkdown] = useState();
@@ -28,9 +27,8 @@ const Documents = ({ match, user }) => {
   const updateDocument = async (newMarkdown) => {
     try {
       setLocalMarkdown(newMarkdown);
-      await documentRef.update({
-        markdown: newMarkdown
-      });
+
+      await updateDocumentContent(newMarkdown);
     } catch (error) {
       console.log(error);
     }

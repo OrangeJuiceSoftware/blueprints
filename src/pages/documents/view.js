@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { firestore } from 'services/firebase';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+
+import useDocument from 'firehooks/useDocument';
 
 import { CommentList, Layout, Previewer, Seo } from 'components';
 import { Button, Card, Col, PageHeader } from 'antd';
@@ -10,7 +11,7 @@ const Documents = ({ match, user }) => {
   const documentRef = firestore.collection('files').doc(match.params.documentID);
   const commentsRef = documentRef.collection('comments');
 
-  const [document, loadingDocument, errorDocument] = useDocumentDataOnce(documentRef);
+  const [document, loadingDocument, errorDocument] = useDocument(match.params.documentID);
 
   if (errorDocument) {
     // this could be permisions or other fails

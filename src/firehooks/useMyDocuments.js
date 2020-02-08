@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import { firestore } from '../services/firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 
 const _generateDocument = ({ templateID = null, cloneID = null, content = null, workSpaceRef, userID }) => {
   return {
@@ -18,7 +17,7 @@ export default (userID) => {
   const myDocumentsRef = documentsRef.where('userID', '==', userID);
 
   // Get data
-  const [documents, loading, error] = useCollectionData(myDocumentsRef, { idField: 'id' });
+  const [documents, loading, error] = useCollectionDataOnce(myDocumentsRef, { idField: 'id' });
 
   // updaters
   const createDocumentFromTemplate = ({ templateID }) => {

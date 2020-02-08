@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import useMyDocuments from 'services/document';
+import useMyDocuments from 'firehooks/useMyDocuments';
 
 import { Seo } from 'components';
 import Layout from 'layouts/default-layout';

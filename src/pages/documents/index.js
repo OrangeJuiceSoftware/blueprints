@@ -1,20 +1,15 @@
-import React, { useState } from 'react';
-
-import { firestore } from 'services/firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import useMyDocuments from 'firehooks/useMyDocuments';
 
 import { Link, Seo } from 'components';
 
 import Layout from 'layouts/sidebar-layout';
 import { Button, Card, Col, Icon, Menu, Row } from 'antd';
 
-const Documents = ({ user, location }) => {
-  const history = useHistory();
-
+const Documents = ({ user }) => {
   // get projects
   // get directories
-  const [documents, loading, error] = useCollectionData(firestore.collection('files').where('userID', '==', user.uid), { idField: 'id' });
+  const [documents, loading, error] = useMyDocuments(user.uid);
 
   const generateSidebarItems = () => {
     return (

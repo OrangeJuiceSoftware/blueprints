@@ -26,8 +26,9 @@ module.exports = override(
   addWebpackAlias({
     ['components']: path.resolve(__dirname, 'src/components'),
     ['forms']: path.resolve(__dirname, 'src/components/forms'),
-    ['layouts']: path.resolve(__dirname, 'src/components/layouts'),
+    ['firehooks']: path.resolve(__dirname, 'src/firehooks'),
     ['hooks']: path.resolve(__dirname, 'src/hooks'),
+    ['layouts']: path.resolve(__dirname, 'src/components/layouts'),
     ['pages']: path.resolve(__dirname, 'src/pages'),
     ['parser']: path.resolve(__dirname, 'src/parser'),
     ['services']: path.resolve(__dirname, 'src/services')
