@@ -75,7 +75,7 @@ const Documents = ({ match, user }) => {
           value={localMarkdown}
           onLoad={() => {
             // no crazzzy about this. Can't decide if the editor should fire up the preview or the component render should
-            setLocalMarkdown(document.markdown);
+            setLocalMarkdown(document.content);
           }}
           setOptions={{
             // tabSize: 2
