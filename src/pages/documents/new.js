@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
-
-import { firestore } from 'services/firebase';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
+import useMyDocuments from 'services/document';
 
-
-import { Link, Seo } from 'components';
-
+import { Seo } from 'components';
 import Layout from 'layouts/default-layout';
 import { Card, Col, Icon, PageHeader, Row } from 'antd';
 
@@ -14,28 +10,20 @@ const templateIDs = [1, 2, 3, 4, 5, 6, 7];
 
 const DocumentsNew = ({ user }) => {
   const history = useHistory();
-  const [documents, loading, error] = useCollectionData(firestore.collection('files').where('userID', '==', user.uid), { idField: 'id' });
+  const [documents, loading, error, { createDocumentFromTemplate, createDocumentFromFile }] = useMyDocuments(user.uid);
 
-  const createDocument = async ({ templateID = null, cloneID = null }) => {
-    const newDocument = {
-      name: null,
-      content: null,
-      workSpaceRef: 'sdfsdf',
-      templateID: null,
-      cloneID: null
-    };
-
-    if (templateID) {
-      newDocument.templateID = templateID;
-      newDocument.content = 'built from template';
-
-    } else if (cloneID) {
-      newDocument.cloneID = cloneID;
-      newDocument.content = 'clones from file';
-    }
-
+  const handleTemplateClick = async (templateID) => {
     try {
-      const docRef = await firestore.collection('files').add(newDocument);
+      const docRef = await createDocumentFromTemplate({ templateID });
+      history.push(`/documents/${docRef.id}/edit`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFileClick = async (cloneID) => {
+    try {
+      const docRef = await createDocumentFromFile({ cloneID });
       history.push(`/documents/${docRef.id}/edit`);
     } catch (error) {
       console.log(error);
@@ -60,7 +48,7 @@ const DocumentsNew = ({ user }) => {
         {/* This is the blank placeholder */}
         <Col span={4}>
           <p>Blank</p>
-          <Card hoverable onClick={createDocument}>
+          <Card hoverable onClick={() => handleTemplateClick({ templateID: 0 })}>
             <Icon type={'plus'}/>
           </Card>
         </Col>
@@ -70,7 +58,7 @@ const DocumentsNew = ({ user }) => {
 
             <p>Template Title</p>
 
-            <Card hoverable onClick={() => createDocument({ templateID })}>
+            <Card hoverable onClick={() => handleTemplateClick({ templateID })}>
               <p>this is a template {templateID}</p>
             </Card>
 
@@ -95,12 +83,10 @@ const DocumentsNew = ({ user }) => {
 
             <p>{document.name}</p>
 
-            <Card hoverable>
-              <Link to={`documents/${document.id}/view`}>
-                <p>Card content</p>
-                <p>Card content</p>
-                <p>Card content</p>
-              </Link>
+            <Card hoverable onClick={() => handleFileClick({ cloneID: document.id })}>
+              <p>Card content</p>
+              <p>Card content</p>
+              <p>Card content</p>
             </Card>
 
           </Col>
