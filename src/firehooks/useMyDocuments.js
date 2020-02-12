@@ -1,25 +1,27 @@
-import { firestore } from '../services/firebase';
+import firebase, { firestore } from '../services/firebase';
 import { useCollectionDataOnce } from 'react-firebase-hooks/firestore';
 
 const _generateDocument = ({ templateID = null, cloneID = null, content = null, workSpaceRef, userID }) => {
   return {
-    name: null,
+    name: 'Untitled',
     workSpaceRef,
     templateID,
     cloneID,
     userID,
-    content
+    content,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 };
 
 export default (userID) => {
   const documentsRef = firestore.collection('files');
-  const myDocumentsRef = documentsRef.where('userID', '==', userID);
+  const myDocumentsRef = documentsRef.where('userID', '==', userID).orderBy('createdAt', 'desc');
 
-  // Get data
   const [documents, loading, error] = useCollectionDataOnce(myDocumentsRef, { idField: 'id' });
 
-  // updaters
+  /////////////////////////////
+  ////////// actions //////////
+  /////////////////////////////
   const createDocumentFromTemplate = ({ templateID }) => {
     const contentFromTemplate = 'built from template';
 

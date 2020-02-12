@@ -6,10 +6,10 @@ import 'ace-builds/src-noconflict/theme-github';
 import useDocument from 'firehooks/useDocument';
 
 import { Layout, Previewer, Seo } from 'components';
-import { Button, Col, PageHeader, Modal } from 'antd';
+import { Button, Col, PageHeader, Modal, Input } from 'antd';
 
 const Documents = ({ match, user }) => {
-  const [document, loading, error, { updateDocumentContent }] = useDocument(match.params.documentID);
+  const [document, loading, error, { updateDocumentContent, renameDocument }] = useDocument(match.params.documentID);
 
 
   const [showPreview, setShowPreview] = useState(false);
@@ -47,7 +47,7 @@ const Documents = ({ match, user }) => {
         style={{
           border: '1px solid rgb(235, 237, 240)'
         }}
-        title="Title"
+        title={<Input onBlur={(e) => renameDocument(e.target.value)} defaultValue={document.name}/>}
         subTitle="This is a subtitle"
         extra={[
           <Button key={'preview'} type="secondary" icon="search" onClick={openPreview}>
@@ -55,7 +55,7 @@ const Documents = ({ match, user }) => {
           </Button>,
 
           <Button key={'review'} type="primary" onClick={openPreview}>
-            Review
+              Review
           </Button>
         ]}
       />
