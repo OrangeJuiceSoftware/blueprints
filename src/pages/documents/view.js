@@ -1,17 +1,14 @@
 import React from 'react';
 
-import { firestore } from 'services/firebase';
-
 import useDocument from 'firehooks/useDocument';
+import useComments from 'firehooks/useComments';
 
 import { CommentList, Layout, Previewer, Seo } from 'components';
 import { Button, Card, Col, PageHeader } from 'antd';
 
 const Documents = ({ match, user }) => {
-  const documentRef = firestore.collection('files').doc(match.params.documentID);
-  const commentsRef = documentRef.collection('comments');
-
   const [document, loadingDocument, errorDocument] = useDocument(match.params.documentID);
+  const [comments, loadingComments, errorComments, { createComment, replyToComment }] = useComments(match.params.documentID);
 
   if (errorDocument) {
     // this could be permisions or other fails
@@ -21,6 +18,23 @@ const Documents = ({ match, user }) => {
   if(loadingDocument) {
     return <p>loading</p>;
   }
+
+  const handleOnComment = (body) => {
+    createComment({
+      authorID: user.uid,
+      avatarURL: user.photoURL,
+      body
+    });
+  };
+
+  const handleOnReply = (commentID, body) => {
+    replyToComment({
+      authorID: user.uid,
+      avatarURL: user.photoURL,
+      body,
+      commentID
+    });
+  };
 
   return (
     <Layout>
@@ -44,7 +58,7 @@ const Documents = ({ match, user }) => {
       </Col>
 
       <Col span={16} offset={4}>
-        <CommentList commentsRef={commentsRef} user={user}/>
+        <CommentList comments={comments} onComment={handleOnComment} onReply={handleOnReply}/>
       </Col>
 
     </Layout>
