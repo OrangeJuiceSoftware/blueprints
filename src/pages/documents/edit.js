@@ -48,7 +48,6 @@ const Documents = ({ match, user }) => {
           border: '1px solid rgb(235, 237, 240)'
         }}
         title={<Input onBlur={(e) => renameDocument(e.target.value)} defaultValue={document.name}/>}
-        subTitle="This is a subtitle"
         extra={[
           <Button key={'preview'} type="secondary" icon="search" onClick={openPreview}>
               Preview
