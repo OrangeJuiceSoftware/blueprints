@@ -2,6 +2,7 @@ const {
   addLessLoader,
   addWebpackAlias,
   fixBabelImports,
+  disableEsLint,
   override
 } = require('customize-cra');
 
@@ -25,12 +26,15 @@ module.exports = override(
   }),
   addWebpackAlias({
     ['components']: path.resolve(__dirname, 'src/components'),
+    ['fire']: path.resolve(__dirname, 'src/fire'),
     ['forms']: path.resolve(__dirname, 'src/components/forms'),
-    ['firehooks']: path.resolve(__dirname, 'src/firehooks'),
     ['hooks']: path.resolve(__dirname, 'src/hooks'),
     ['layouts']: path.resolve(__dirname, 'src/components/layouts'),
     ['pages']: path.resolve(__dirname, 'src/pages'),
     ['parser']: path.resolve(__dirname, 'src/parser'),
+    ['routes']: path.resolve(__dirname, 'src/routes'),
     ['services']: path.resolve(__dirname, 'src/services')
-  })
+  }),
+  // MUTE THE WARNINGS.
+  disableEsLint()
 );

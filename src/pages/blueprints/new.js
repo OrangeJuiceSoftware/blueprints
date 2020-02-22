@@ -1,21 +1,47 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import useMyDocuments from 'firehooks/useMyDocuments';
+
+import { blueprintEditPath } from 'routes';
+
+import { useBlueprints, useOrganizations } from 'fire/hooks';
+import { createBlueprintFromTemplate, createBlueprintFromFile } from 'fire/actions';
+
+import { useQuery } from 'hooks';
 
 import { Seo } from 'components';
 import Layout from 'layouts/default-layout';
 import { Card, Col, Icon, PageHeader, Row } from 'antd';
+import groupBy from 'lodash/groupBy';
 
 const templateIDs = [1, 2, 3, 4, 5, 6, 7];
 
-const DocumentsNew = ({ user }) => {
+const BlueprintsNew = ({ user }) => {
   const history = useHistory();
-  const [documents, loading, error, { createDocumentFromTemplate, createDocumentFromFile }] = useMyDocuments(user.uid);
+  const query = useQuery();
+
+  const [organizations, loadingOrganizations, errorOrganizations] = useOrganizations(user.uid);
+  const [blueprints, loading, error] = useBlueprints(organizations && organizations.map(({ id }) => id));
+  const [selectedOrganization, setSelectedOrganization] = useState();
+
+  const organizationsMap = groupBy(organizations, 'id');
+
+  useEffect(() => {
+    // hack to get around using exhaustive deps array. organizations is an object.... always not equal to last
+    if (!loadingOrganizations) {
+      if (query.o) {
+        setSelectedOrganization(organizationsMap[query.o]);
+      } else {
+        setSelectedOrganization(organizations[0]);
+      }
+    }
+  }, [loadingOrganizations, query.o]);
+
+  console.log(selectedOrganization);
 
   const handleTemplateClick = async (templateID) => {
     try {
-      const docRef = await createDocumentFromTemplate({ templateID });
-      history.push(`/documents/${docRef.id}/edit`);
+      const docRef = await createBlueprintFromTemplate({ userID: user.uid, organizationID: selectedOrganization.id, templateID });
+      history.push(blueprintEditPath(docRef.id));
     } catch (error) {
       console.log(error);
     }
@@ -23,8 +49,8 @@ const DocumentsNew = ({ user }) => {
 
   const handleFileClick = async (cloneID) => {
     try {
-      const docRef = await createDocumentFromFile({ cloneID });
-      history.push(`/documents/${docRef.id}/edit`);
+      const docRef = await createBlueprintFromFile({ userID: user.uid, organizationID: selectedOrganization.id, cloneID });
+      history.push(blueprintEditPath(docRef.id));
     } catch (error) {
       console.log(error);
     }
@@ -74,16 +100,16 @@ const DocumentsNew = ({ user }) => {
             margin: '24px 0',
             borderBottom: '1px solid rgb(235, 237, 240)'
           }}
-          title="Your Files"
+          title="Your Blueprints"
           subTitle="Clone from an existing file"
         />
 
-        {documents && documents.map((document) => (
-          <Col key={document.id} span={4}>
+        {blueprints && blueprints.map((blueprint) => (
+          <Col key={blueprint.id} span={4}>
 
-            <p>{document.name}</p>
+            <p>{blueprint.title}</p>
 
-            <Card hoverable onClick={() => handleFileClick({ cloneID: document.id })}>
+            <Card hoverable onClick={() => handleFileClick({ cloneID: blueprint.id })}>
               <p>Card content</p>
               <p>Card content</p>
               <p>Card content</p>
@@ -98,4 +124,4 @@ const DocumentsNew = ({ user }) => {
   );
 };
 
-export default DocumentsNew;
+export default BlueprintsNew;

@@ -3,18 +3,18 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
 
-import useDocument from 'firehooks/useDocument';
+import { useBlueprint } from 'fire/hooks';
+import { updateBlueprintContent, updateBlueprintTitle } from 'fire/actions';
 
 import { Layout, Previewer, Seo } from 'components';
 import { Button, Col, PageHeader, Modal, Input } from 'antd';
 
-const Documents = ({ match, user }) => {
-  const [document, loading, error, { updateDocumentContent, renameDocument }] = useDocument(match.params.documentID);
-
+const BlueprintsEdit = ({ match, user }) => {
+  const blueprintID = match.params.blueprintID;
+  const [blueprint, loading, error] = useBlueprint(blueprintID);
 
   const [showPreview, setShowPreview] = useState(false);
   const [localMarkdown, setLocalMarkdown] = useState();
-
 
   const openPreview = () => {
     setShowPreview(true);
@@ -24,11 +24,11 @@ const Documents = ({ match, user }) => {
     setShowPreview(false);
   };
 
-  const updateDocument = async (newMarkdown) => {
+  const updateBlueprint = async (newMarkdown) => {
     try {
       setLocalMarkdown(newMarkdown);
 
-      await updateDocumentContent(newMarkdown);
+      await updateBlueprintContent(blueprintID, newMarkdown);
     } catch (error) {
       console.log(error);
     }
@@ -41,18 +41,17 @@ const Documents = ({ match, user }) => {
 
   return (
     <Layout>
-      <Seo title={'Documents'}/>
+      <Seo title={blueprint.title}/>
 
       <PageHeader
         style={{
           border: '1px solid rgb(235, 237, 240)'
         }}
-        title={<Input onBlur={(e) => renameDocument(e.target.value)} defaultValue={document.name}/>}
+        title={<Input onBlur={(e) => updateBlueprintTitle(blueprintID, e.target.value)} defaultValue={blueprint.title}/>}
         extra={[
           <Button key={'preview'} type="secondary" icon="search" onClick={openPreview}>
               Preview
           </Button>,
-
           <Button key={'review'} type="primary" onClick={openPreview}>
               Review
           </Button>
@@ -65,14 +64,14 @@ const Documents = ({ match, user }) => {
           fontSize={14}
           highlightActiveLine={true}
           mode={'markdown'}
-          onChange={updateDocument}
+          onChange={updateBlueprint}
           debounceChangePeriod={750}
           showPrintMargin={false}
           theme={'github'}
           value={localMarkdown}
           onLoad={() => {
             // no crazzzy about this. Can't decide if the editor should fire up the preview or the component render should
-            setLocalMarkdown(document.content);
+            setLocalMarkdown(blueprint.content);
           }}
           setOptions={{
             // tabSize: 2
@@ -99,4 +98,4 @@ const Documents = ({ match, user }) => {
   );
 };
 
-export default Documents;
+export default BlueprintsEdit;

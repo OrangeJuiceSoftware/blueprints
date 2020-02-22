@@ -1,26 +1,28 @@
 import React from 'react';
 
-import useDocument from 'firehooks/useDocument';
-import useComments from 'firehooks/useComments';
+import { useBlueprint, useComments } from 'fire/hooks';
+import { createComment, replyToComment } from 'fire/actions';
+
 
 import { CommentList, Layout, Previewer, Seo } from 'components';
 import { Button, Card, Col, PageHeader } from 'antd';
 
-const Documents = ({ match, user }) => {
-  const [document, loadingDocument, errorDocument] = useDocument(match.params.documentID);
-  const [comments, loadingComments, errorComments, { createComment, replyToComment }] = useComments(match.params.documentID);
+const BlueprintsView = ({ match, user }) => {
+  const blueprintID = match.params.blueprintID;
+  const [blueprint, loadingBlueprint, errorBlueprint] = useBlueprint(blueprintID);
+  const [comments, loadingComments, errorComments] = useComments(blueprintID);
 
-  if (errorDocument) {
+  if (errorBlueprint) {
     // this could be permisions or other fails
-    return <p>error loading documnet</p>;
+    return <p>error loading blueprint</p>;
   }
   // waiting on react suspense to do this part better
-  if(loadingDocument) {
+  if(loadingBlueprint) {
     return <p>loading</p>;
   }
 
   const handleOnComment = (body) => {
-    createComment({
+    createComment(blueprintID, {
       authorID: user.uid,
       avatarURL: user.photoURL,
       body
@@ -28,7 +30,7 @@ const Documents = ({ match, user }) => {
   };
 
   const handleOnReply = (commentID, body) => {
-    replyToComment({
+    replyToComment(blueprintID, commentID, {
       authorID: user.uid,
       avatarURL: user.photoURL,
       body,
@@ -38,12 +40,11 @@ const Documents = ({ match, user }) => {
 
   return (
     <Layout>
-      <Seo title={'Documents'}/>
+      <Seo title={blueprint.title}/>
 
       <PageHeader
         style={{ border: '1px solid rgb(235, 237, 240)' }}
-        title="Title"
-        subTitle="This is a subtitle"
+        title={blueprint.title}
         extra={[
           <Button key={'1'} type="primary" icon="search">
               Preview
@@ -53,7 +54,7 @@ const Documents = ({ match, user }) => {
 
       <Col span={16} offset={4}>
         <Card style={{}}>
-          <Previewer markdown={document && document.markdown}/>
+          <Previewer markdown={blueprint && blueprint.content}/>
         </Card>
       </Col>
 
@@ -65,4 +66,4 @@ const Documents = ({ match, user }) => {
   );
 };
 
-export default Documents;
+export default BlueprintsView;

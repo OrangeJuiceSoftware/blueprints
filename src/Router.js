@@ -70,7 +70,7 @@ const Router = () => {
               key={route.path}
               path={route.path}
               render={props => (
-                <route.component {...props} user={user} />
+                <route.page {...props} user={user} />
               )}
             />
           ))}

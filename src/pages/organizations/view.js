@@ -1,20 +1,21 @@
 import React from 'react';
-import useMyDocuments from 'firehooks/useMyDocuments';
+import { useBlueprints, useOrganization } from 'fire/hooks';
+
+import { blueprintNewPath, blueprintViewPath } from 'routes';
 
 import { Link, Seo } from 'components';
 
 import Layout from 'layouts/sidebar-layout';
 import { Button, Card, Col, Icon, Menu, Row } from 'antd';
 
-const Documents = ({ user }) => {
-  // get projects
-  // get directories
-  const [documents, loading, error] = useMyDocuments(user.uid);
+const OrganizationView = ({ user, match }) => {
+  const [organization, loadingOrganization, errorOrganization] = useOrganization(match.params.organizationID);
+  const [blueprints, loading, error] = useBlueprints([match.params.organizationID]);
 
   const generateSidebarItems = () => {
     return (
       <>
-        <Link to={'/documents/new'}>
+        <Link to={blueprintNewPath()}>
           <Button type="primary" shape="round" icon="plus" size={'large'} style={{ margin: 16 }}>
             New
           </Button>
@@ -30,22 +31,26 @@ const Documents = ({ user }) => {
     );
   };
 
+  if (loadingOrganization) {
+    return <p>loading</p>;
+  }
+
   return (
     <Layout sidebarItems={generateSidebarItems()}>
-      <Seo title={'Documents'}/>
+      <Seo title={organization.name}/>
 
       <Row gutter={[24, 24]} style={{ margin: 24 }}>
-        {documents && documents.map((document) => (
-          <Col key={document.id} span={4}>
+        {blueprints && blueprints.map((blueprint) => (
+          <Col key={blueprint.id} span={4}>
             {/* can't nest a tags apparently.... */}
-            <Card hoverable title={<Link to={`documents/${document.id}/view`}>{document.name}</Link>} actions={[
+            <Card hoverable title={<Link to={blueprintViewPath(blueprint.id)}>{blueprint.title}</Link>} actions={[
               <Icon type="copy" key="copy" />,
-              <Link key="edit" to={`documents/${document.id}/edit`}>
+              <Link key="edit" to={`/b/${blueprint.id}/edit`}>
                 <Icon type="edit" />
               </Link>,
               <Icon type="ellipsis" key="ellipsis" />
             ]}>
-              <Link to={`documents/${document.id}/view`}>
+              <Link to={blueprintViewPath(blueprint.id)}>
                 <p>Card content</p>
                 <p>Card content</p>
                 <p>Card content</p>
@@ -60,4 +65,4 @@ const Documents = ({ user }) => {
   );
 };
 
-export default Documents;
+export default OrganizationView;

@@ -1,7 +1,7 @@
 import useAuthRedirect from './useAuthRedirect';
-// import useInput from './useInput';
+import useQuery from './useQuery';
 
 export {
-  useAuthRedirect
-  // useInput
+  useAuthRedirect,
+  useQuery
 };
