@@ -28,6 +28,9 @@ export default [
   { path: '/settings/organizations', page: SettingsOrganizations }
 ];
 
+
+export const dashboardPath = () => '/dashboard';
+
 export const organizationPath = (organizationID) => `/o/${organizationID}`;
 export const blueprintEditPath = (blueprintID) => `/b/${blueprintID}/edit`;
 export const blueprintViewPath = (blueprintID) => `/b/${blueprintID}/view`;

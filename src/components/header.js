@@ -1,11 +1,10 @@
 import React from 'react';
 import { auth } from 'services/firebase';
 import { useHistory } from 'react-router-dom';
-
+import { dashboardPath } from 'routes';
 import { Layout, Row, Menu, Icon, Dropdown, Button } from 'antd';
+import { Link } from 'components';
 import { geekblue } from '@ant-design/colors';
-
-const { Header } = Layout;
 
 const PageHeader = ({ user }) => {
   const history = useHistory();
@@ -25,15 +24,17 @@ const PageHeader = ({ user }) => {
   );
 
   return (
-    <Header style={{ padding: 0 }}>
+    <Layout.Header style={{ padding: 0 }}>
       <Row type={'flex'} align={'middle'} justify={'space-between'}>
 
-        <div style={{
-          height: 20,
-          width: 150,
-          background: geekblue[0],
-          margin: 10
-        }}/>
+        <Link to={dashboardPath()}>
+          <div style={{
+            height: 20,
+            width: 150,
+            background: geekblue[0],
+            margin: 10
+          }}/>
+        </Link>
 
         {user&& <Row style={{ margin: '0 10px' }}>
           <Dropdown trigger={['click']} overlay={menu}>
@@ -43,7 +44,7 @@ const PageHeader = ({ user }) => {
           </Dropdown>
         </Row>}
       </Row>
-    </Header>
+    </Layout.Header>
   );
 };
 
