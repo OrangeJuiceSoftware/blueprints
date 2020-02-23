@@ -1,5 +1,5 @@
-import { blueprintsRef, usersRef, organizationsRef } from './collections';
-import { Blueprint, Comment, Reply } from './models';
+import firebase, { firestore } from '../services/firebase';
+import { blueprintsRef, usersRef, organizationsRef, Activity, Blueprint, Comment, Reply } from './schema';
 
 ////////// Blueprints //////////
 export const createBlueprintFromTemplate = ({ templateID, userID, organizationID }) => {
@@ -35,12 +35,44 @@ export const updateBlueprintContent = (id, content) => {
   });
 };
 
+export const labelBlueprint = (blueprintID, organizationID, label) => {
+  const batch = firestore.batch();
+
+  const blueprintRef = blueprintsRef.doc(blueprintID);
+  const organizationRef = organizationsRef.doc(organizationID);
+
+  batch.update(blueprintRef, {
+    labels: firebase.firestore.FieldValue.arrayUnion(label)
+  });
+
+  batch.update(organizationRef, {
+    labels: firebase.firestore.FieldValue.arrayUnion(label)
+  });
+
+
+  return batch.commit();
+};
+
 export const updateBlueprintTitle = (id, title) => {
   const blueprintRef = blueprintsRef.doc(id);
   return blueprintRef.update({
     title
   });
 };
+
+////////// Activity //////////
+export const createActivity = (blueprintID, params) => {
+  const blueprintRef = blueprintsRef.doc(blueprintID);
+  const activitiesRef = blueprintRef.collection('activities');
+
+  const newComment = Activity({
+    ...params,
+    blueprintRef
+  });
+
+  activitiesRef.add(newComment);
+};
+
 
 ////////// Comments //////////
 export const createComment = (blueprintID, params) => {

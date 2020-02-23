@@ -1,8 +1,7 @@
-import { firestore } from 'services/firebase';
-import { useDocumentDataOnce, useCollectionData, useCollectionDataOnce } from 'react-firebase-hooks/firestore';
+import { useDocumentDataOnce, useCollectionData, useCollectionDataOnce, useDocumentData } from 'react-firebase-hooks/firestore';
 import groupBy from 'lodash/groupBy';
 
-import { blueprintsRef, usersRef, organizationsRef } from './collections';
+import { blueprintsRef, usersRef, organizationsRef, repliesGroupRef, activitiesGroupRef } from './schema';
 
 ////////// Blueprints //////////
 export const useBlueprint = (blueprintID) => useDocumentDataOnce(blueprintsRef.doc(blueprintID));
@@ -13,13 +12,16 @@ export const useBlueprints = (organizationIDs) => {
   return useCollectionDataOnce(blueprintsQuery, { idField: 'id' });
 };
 
+////////// Activity //////////
+export const useActivities = (blueprintID) => useCollectionData(blueprintsRef.doc(blueprintID).collection('activities'));
+
 ////////// Comments //////////
 export const useComments = (blueprintID) => {
   const blueprintRef = blueprintsRef.doc(blueprintID);
   const commentsRef = blueprintRef.collection('comments');
 
   const commentsQuery = commentsRef.orderBy('createdAt', 'asc');
-  const repliesQuery = firestore.collectionGroup('replies').where('blueprintRef', '==', blueprintRef).orderBy('createdAt', 'asc');
+  const repliesQuery = repliesGroupRef.where('blueprintRef', '==', blueprintRef).orderBy('createdAt', 'asc');
 
   const [comments = [], loadingComments, errorComments] = useCollectionData(commentsQuery, { idField: 'id' });
   const [replies = [], loadingReplies, errorReplies] = useCollectionData(repliesQuery, { idField: 'id' });

@@ -1,4 +1,21 @@
-import firebase from 'services/firebase';
+import firebase, { firestore } from '../services/firebase';
+
+export const blueprintsRef = firestore.collection('blueprints');
+export const usersRef = firestore.collection('users');
+export const organizationsRef = firestore.collection('organizations');
+export const repliesGroupRef = firestore.collectionGroup('replies');
+export const activitiesGroupRef = firestore.collectionGroup('activities');
+
+export const Activity = ({ type, username, userID, blueprintRef, avatarURL }) => {
+  return {
+    blueprintRef,
+    type,
+    userID,
+    username,
+    avatarURL,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+};
 
 export const Blueprint = ({ templateID = null, cloneID = null, content = null, organizationRef, userID }) => {
   return {
