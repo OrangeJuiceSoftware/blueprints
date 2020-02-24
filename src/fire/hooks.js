@@ -14,7 +14,7 @@ export const useBlueprints = (organizationIDs) => {
 };
 
 ////////// Activity //////////
-export const useActivities = (blueprintID) => useCollectionData(blueprintsRef.doc(blueprintID).collection('activities'));
+export const useActivities = (blueprintID) => useCollectionData(blueprintsRef.doc(blueprintID).collection('activities'), { idField: 'id' });
 export const useAllActivities = (blueprintIDs) => {
   const blueprintRefs = blueprintIDs && blueprintIDs.map((id) => blueprintsRef.doc(id));
 

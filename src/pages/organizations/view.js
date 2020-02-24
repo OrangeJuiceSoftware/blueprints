@@ -10,7 +10,7 @@ import { Button, Card, Col, Icon, Menu, Row } from 'antd';
 
 const OrganizationView = ({ user, match }) => {
   const [organization, loadingOrganization, errorOrganization] = useOrganization(match.params.organizationID);
-  const [blueprints, loading, error] = useBlueprints([match.params.organizationID]);
+  const [blueprints, loadingBlueprints, errorBlueprints] = useBlueprints([match.params.organizationID]);
 
   const generateSidebarItems = () => {
     return (

@@ -53,6 +53,24 @@ export const labelBlueprint = (blueprintID, organizationID, label) => {
   return batch.commit();
 };
 
+export const unlabelBlueprint = async (blueprintID, organizationID, label) => {
+  const blueprintRef = blueprintsRef.doc(blueprintID);
+  const organizationRef = organizationsRef.doc(organizationID);
+
+  // No way to do this in a transaction???
+  const removeLabelPromise = await blueprintRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
+
+  // limit to 1 so we don't unneccesarily query ourselves to $765432534.00
+  const existingBlueprintSnapshot = await blueprintsRef.where('labels', 'array-contains', label).limit(1).get();
+
+  // if there is no blueprint left with that label... remove it from the organization
+  if (existingBlueprintSnapshot.size === 0) {
+    await organizationRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
+  }
+
+  return removeLabelPromise;
+};
+
 export const updateBlueprintTitle = (id, title) => {
   const blueprintRef = blueprintsRef.doc(id);
   return blueprintRef.update({
