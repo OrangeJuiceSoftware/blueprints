@@ -120,8 +120,10 @@ const seedFunction = async () => {
       const activityDoc = await blueprintDoc.collection('activities').add({
         type: 'APPROVAL',
         userRef: userRef,
+        blueprintRef:blueprintDoc,
         username: 'Eric Leong',
-        avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4'
+        avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
     });
