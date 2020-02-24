@@ -8,12 +8,22 @@ export const useBlueprint = (blueprintID) => useDocumentDataOnce(blueprintsRef.d
 export const useBlueprints = (organizationIDs) => {
   // map the organizationIDs into and array of refs
   const organizationRefs = organizationIDs && organizationIDs.map((id) => organizationsRef.doc(id));
+  // need to limit this to 10
   const blueprintsQuery = organizationIDs && blueprintsRef.where('organizationRef', 'in', organizationRefs).orderBy('createdAt', 'desc');
   return useCollectionDataOnce(blueprintsQuery, { idField: 'id' });
 };
 
 ////////// Activity //////////
 export const useActivities = (blueprintID) => useCollectionData(blueprintsRef.doc(blueprintID).collection('activities'));
+export const useAllActivities = (blueprintIDs) => {
+  const blueprintRefs = blueprintIDs && blueprintIDs.map((id) => blueprintsRef.doc(id));
+
+
+  // need to limit this to 10
+  const activitiesQuery = blueprintIDs && activitiesGroupRef.where('blueprintRef', 'in', blueprintRefs).orderBy('createdAt', 'desc');
+
+  return useCollectionData(activitiesQuery, { idField: 'id' });
+};
 
 ////////// Comments //////////
 export const useComments = (blueprintID) => {
