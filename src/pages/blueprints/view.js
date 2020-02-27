@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import { organizationPath } from 'routes';
 
-import { useBlueprint, useComments, useActivities } from 'fire/hooks';
-import { labelBlueprint, unlabelBlueprint, createActivity, createComment, replyToComment } from 'fire/actions';
+import { useBlueprint, useOrganization, useComments, useActivities } from 'fire/hooks';
+import { labelBlueprint, unlabelBlueprint, approveBlueprint, createActivity, createComment, replyToComment } from 'fire/actions';
 
 import { CommentList, Layout, Previewer, Seo } from 'components';
 import { Button, Card, Col, Icon, Input, PageHeader, Tag, Timeline, Typography, Row } from 'antd';
-const { Text } = Typography;
+import { Link } from 'react-router-dom';
+const { Text, Title } = Typography;
 
 const BlueprintsView = ({ match, user }) => {
   const blueprintID = match.params.blueprintID;
 
   const [blueprint, loadingBlueprint, errorBlueprint] = useBlueprint(blueprintID);
+  const [organization, loadingOrganization, errorOrganization] = useOrganization(blueprint && blueprint.organizationRef.id);
   const [comments, loadingComments, errorComments] = useComments(blueprintID);
   const [activities, loadingActivities, errorActivities] = useActivities(blueprintID);
 
@@ -44,6 +47,8 @@ const BlueprintsView = ({ match, user }) => {
   };
 
   const handleOnApproval = () => {
+    // do these in a batch in the action?
+    approveBlueprint(blueprintID, user.uid);
     createActivity(blueprintID, {
       userID: user.uid,
       username: user.displayName,
@@ -61,7 +66,6 @@ const BlueprintsView = ({ match, user }) => {
   const handleOnRemoveLabel = (label) => {
     unlabelBlueprint(blueprintID, blueprint.organizationRef.id, label);
   };
-
 
   const newLabelForm = (
     <span key={'newFrom'}>
@@ -97,7 +101,16 @@ const BlueprintsView = ({ match, user }) => {
 
       <PageHeader
         style={{ border: '1px solid rgb(235, 237, 240)' }}
-        title={blueprint.title}
+        title={
+          <>
+            {organization && <Link to={organizationPath(organization.id)}>
+              {organization.name}
+            </Link>}
+            <Title>
+              {blueprint.title}
+            </Title>
+          </>
+        }
         tags={[
           ...labels,
           newLabelForm
@@ -130,7 +143,7 @@ const BlueprintsView = ({ match, user }) => {
                 `${username} made changes `
               }
 
-              at <Text>{createdAt.toDate().toLocaleDateString()}</Text>
+              at <Text>{createdAt && createdAt.toDate().toLocaleDateString()}</Text>
             </Timeline.Item>
           ))}
         </Timeline>

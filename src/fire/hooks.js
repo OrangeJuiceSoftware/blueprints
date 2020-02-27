@@ -50,7 +50,7 @@ export const useComments = (blueprintID) => {
 };
 
 ////////// Organizations //////////
-export const useOrganization = (organizationID) => useDocumentDataOnce(organizationsRef.doc(organizationID));
+export const useOrganization = (organizationID) => useDocumentDataOnce(organizationID && organizationsRef.doc(organizationID));
 export const useOrganizations = (userID) => {
   const userRef = usersRef.doc(userID);
   const organizationsQuery = organizationsRef.where('members', 'array-contains', userRef);

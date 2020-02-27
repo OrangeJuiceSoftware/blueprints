@@ -78,17 +78,25 @@ export const updateBlueprintTitle = (id, title) => {
   });
 };
 
+export const approveBlueprint = (id, userID) => {
+  const blueprintRef = blueprintsRef.doc(id);
+
+  return blueprintRef.update({
+    approvals: firebase.firestore.FieldValue.arrayUnion(userID)
+  });
+};
+
 ////////// Activity //////////
 export const createActivity = (blueprintID, params) => {
   const blueprintRef = blueprintsRef.doc(blueprintID);
   const activitiesRef = blueprintRef.collection('activities');
 
-  const newComment = Activity({
+  const newActivitiy = Activity({
     ...params,
     blueprintRef
   });
 
-  activitiesRef.add(newComment);
+  return activitiesRef.add(newActivitiy);
 };
 
 
