@@ -22,7 +22,8 @@ module.exports = override(
       '@primary-color': geekblue[5],
       '@btn-primary-bg': green[5],
       '@layout-header-height': '40px',
-      '@layout-header-background': geekblue[5]
+      '@layout-header-background': geekblue[5],
+      '@layout-sider-background-light': '@layout-body-background'
     }
   }),
   addWebpackAlias({

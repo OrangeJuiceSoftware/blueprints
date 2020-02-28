@@ -8,7 +8,7 @@ const { Content } = Layout;
 const SidebarLayout = ({ children, sidebarItems }) => {
 
   return (
-    <Layout>
+    <Layout hasSider>
       <Sidebar>
         {sidebarItems}
       </Sidebar>

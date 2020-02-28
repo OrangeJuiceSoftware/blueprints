@@ -94,7 +94,6 @@ const BlueprintsView = ({ match, user }) => {
     return <Tag key={label} closable onClose={() => handleOnRemoveLabel(label)}>{label}</Tag>;
   });
 
-
   return (
     <Layout>
       <Seo title={blueprint.title}/>
@@ -103,12 +102,8 @@ const BlueprintsView = ({ match, user }) => {
         style={{ border: '1px solid rgb(235, 237, 240)' }}
         title={
           <>
-            {organization && <Link to={organizationPath(organization.id)}>
-              {organization.name}
-            </Link>}
-            <Title>
-              {blueprint.title}
-            </Title>
+            {organization && <Link to={organizationPath(organization.id)}>{organization.name}</Link>}
+            <Title>{blueprint.title}</Title>
           </>
         }
         tags={[
