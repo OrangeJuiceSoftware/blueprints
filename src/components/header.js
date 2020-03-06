@@ -9,6 +9,10 @@ import { geekblue } from '@ant-design/colors';
 const PageHeader = ({ user }) => {
   const history = useHistory();
 
+  const logout = () => {
+    auth.signOut();
+  };
+
   const menu = (
     <Menu style={{ padding: 16 }}>
       <Menu.Item onClick={() => history.push('/settings/account')} key="account">
@@ -16,7 +20,7 @@ const PageHeader = ({ user }) => {
       Account
       </Menu.Item>
 
-      <Menu.Item onClick={() => auth.signOut()} key="logout">
+      <Menu.Item onClick={logout} key="logout">
         <Icon type="poweroff"/>
       Logout
       </Menu.Item>

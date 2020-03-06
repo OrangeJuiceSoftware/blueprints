@@ -13,24 +13,23 @@ import SettingsBilling from 'pages/settings/billing';
 import SettingsOrganizations from 'pages/settings/organizations';
 
 export default [
-  { path: '/dashboard', page: Dashboard },
+  { path: '/', page: Dashboard, isPrivate: true },
   { path: '/login', page: Login },
   { path: '/signup', page: Signup },
 
-  { path: '/b/new', page: BlueprintsNew },
-  { path: '/b/:blueprintID/edit', page: BlueprintsEdit },
-  { path: '/b/:blueprintID/view', page: BlueprintsView },
+  { path: '/b/new', page: BlueprintsNew, isPrivate: true },
+  { path: '/b/:blueprintID/edit', page: BlueprintsEdit, isPrivate: true },
+  { path: '/b/:blueprintID/view', page: BlueprintsView, isPrivate: true },
 
-  { path: '/o/:organizationID', page: OrganizationsView },
+  { path: '/o/:organizationID', page: OrganizationsView, isPrivate: true },
 
-  { path: '/settings/account', page: SettingsAccount },
-  { path: '/settings/billing', page: SettingsBilling },
-  { path: '/settings/organizations', page: SettingsOrganizations }
+  { path: '/settings/account', page: SettingsAccount, isPrivate: true },
+  { path: '/settings/billing', page: SettingsBilling, isPrivate: true },
+  { path: '/settings/organizations', page: SettingsOrganizations, isPrivate: true }
 ];
 
 
-export const dashboardPath = () => '/dashboard';
-
+export const dashboardPath = () => '/';
 export const organizationPath = (organizationID) => `/o/${organizationID}`;
 export const blueprintEditPath = (blueprintID) => `/b/${blueprintID}/edit`;
 export const blueprintViewPath = (blueprintID) => `/b/${blueprintID}/view`;

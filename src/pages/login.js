@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { auth } from 'services/firebase';
 import { useHistory } from 'react-router-dom';
 
+import { dashboardPath } from 'routes';
+
+import { createPersonalOrganization } from 'fire/actions';
+
 import { useAuthRedirect } from 'hooks';
 
 import Layout from 'layouts/default-layout';
 import AuthForm from 'forms/auth-form';
-import { Seo, Link } from 'components';
 
+import { Seo, Link } from 'components';
 import { Button, Col, Row, Typography } from 'antd';
 import { geekblue } from '@ant-design/colors';
 
@@ -15,17 +19,19 @@ const { Text, Title } = Typography;
 
 const LoginPage = () => {
   const history = useHistory();
-  const [result, redirectError, { signInWithGitHub, signInWithGoogle }] = useAuthRedirect();
   const [errors, setErrors] = useState({});
 
-  // this action will get be duplicated by the middleware but lets leave it here for now
-  // result also contains the token
-  if (result && result.user) {
-    history.push({ pathname: '/dashboard' });
-  }
+  const { signInWithGitHub, signInWithGoogle } = useAuthRedirect((result) => {
+    if (result && result.user) {
+      if (result.additionalUserInfo.isNewUser) {
+        createPersonalOrganization({ userID: result.user.uid });
+      }
 
-  // https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#getredirectresult
-  if (redirectError) {
+      history.push(dashboardPath());
+    }
+
+    // https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#getredirectresult
+    // if (redirectError) {
     // auth/email-already-in-use
     // auth/credential-already-in-use
     // auth/account-exists-with-different-credential
@@ -35,14 +41,15 @@ const LoginPage = () => {
     // var errorMessage = error.message;
     // var email = error.email;
     // var credential = error.credential;
-  }
+    // }
+  });
 
   const loginWithEmail = async ({ email, password }) => {
     try {
       await auth.signInWithEmailAndPassword(email, password);
 
       // send them to the home page
-      history.push('/dashboard');
+      history.push(dashboardPath());
     } catch (error) {
       setErrors();
       // auth/user-disabled;

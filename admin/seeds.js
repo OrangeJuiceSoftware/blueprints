@@ -88,7 +88,7 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 const seedFunction = async () => {
-  const ericUserID = 'P8VSjFSeduaoP3ELW3V6UuA9erR2';
+  const ericUserID = 'tPkrVIi04NdKyoSrWEV95tCR9MK2';
 
   const userRef = firestore.collection('users').doc(ericUserID);
 

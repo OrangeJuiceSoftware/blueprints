@@ -1,17 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import firebase, { auth } from '../services/firebase';
 
 const githubProvider = new firebase.auth.GithubAuthProvider();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export default () => {
-  const [result, setResult] = useState();
-  const [redirectError, setRedirectError] = useState();
-
+export default (callback) => {
   useEffect(() => {
-    auth.getRedirectResult()
-      .then(setResult)
-      .catch(setRedirectError);
+    const getResult = async () => {
+      const result = await auth.getRedirectResult();
+      callback(result);
+    };
+
+    getResult();
+
   }, []);
 
   const signInWithGitHub = () => {
@@ -22,12 +23,8 @@ export default () => {
     auth.signInWithRedirect(googleProvider);
   };
 
-  return [
-    result,
-    redirectError,
-    {
-      signInWithGitHub,
-      signInWithGoogle
-    }
-  ];
+  return {
+    signInWithGitHub,
+    signInWithGoogle
+  };
 };

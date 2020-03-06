@@ -29,6 +29,17 @@ export const Blueprint = ({ templateID = null, cloneID = null, content = null, o
   };
 };
 
+export const Organization = ({ userID, name }) => {
+  return {
+    name,
+    creatorID: userID,
+    admins: [usersRef.doc(userID)],
+    members: [usersRef.doc(userID)],
+    labels: ['testssdfs'],
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+};
+
 export const Comment = ({ body, blueprintRef, authorID, avatarURL }) => {
   return {
     body,

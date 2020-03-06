@@ -1,5 +1,5 @@
 import firebase, { firestore } from '../services/firebase';
-import { blueprintsRef, usersRef, organizationsRef, Activity, Blueprint, Comment, Reply } from './schema';
+import { blueprintsRef, usersRef, organizationsRef, Activity, Blueprint, Comment, Organization, Reply } from './schema';
 
 ////////// Blueprints //////////
 export const createBlueprintFromTemplate = ({ templateID, userID, organizationID }) => {
@@ -84,6 +84,16 @@ export const approveBlueprint = (id, userID) => {
   return blueprintRef.update({
     approvals: firebase.firestore.FieldValue.arrayUnion(userID)
   });
+};
+
+////////// Organizations //////////
+export const createPersonalOrganization = ({ userID }) => {
+  const personalOrg = Organization({
+    userID,
+    name: 'Personal'
+  });
+
+  return organizationsRef.doc(userID).set(personalOrg, { merge: true });
 };
 
 ////////// Activity //////////

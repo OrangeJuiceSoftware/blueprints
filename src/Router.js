@@ -2,6 +2,7 @@ import React from 'react';
 import {
   BrowserRouter,
   Switch,
+  Redirect,
   Route,
   withRouter
 } from 'react-router-dom';
@@ -50,7 +51,7 @@ const Router = () => {
   const [user, loading, error] = useAuthState(auth);
 
   if (loading) {
-    return <p>Loading</p>;
+    return <p>Loading the whole app</p>;
   }
 
   if (error) {
@@ -64,18 +65,29 @@ const Router = () => {
     <BrowserRouter>
       <App user={user}>
         <SwitchWithTransition>
-          {routes.map((route) => (
-            <Route
+          {routes.map((route) => {
+            return <Route
               exact
               key={route.path}
               path={route.path}
               render={props => (
-                <route.page {...props} user={user} />
+                route.isPrivate && !user ?
+                  <Redirect
+                    key={route.path}
+                    to={{
+                      pathname: '/signup'
+                    }}
+                  /> :
+                  <route.page {...props} user={user} />
               )}
-            />
-          ))}
-        </SwitchWithTransition>
+            />;
+          })}
 
+          <Route path="*">
+            gooooo fuck yourself
+          </Route>
+
+        </SwitchWithTransition>
 
       </App>
     </BrowserRouter>

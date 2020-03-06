@@ -2,46 +2,55 @@ import React, { useState } from 'react';
 import { auth } from 'services/firebase';
 import { useHistory } from 'react-router-dom';
 
-import { useAuthRedirect } from 'hooks';
-import Layout from 'layouts/default-layout';
-import { Seo, Link } from 'components';
+import { dashboardPath } from 'routes';
 
+import { createPersonalOrganization } from 'fire/actions';
+
+import { useAuthRedirect } from 'hooks';
+
+import Layout from 'layouts/default-layout';
+import AuthForm from 'forms/auth-form';
+
+import { Seo, Link } from 'components';
 import { Button, Col, Row, Typography } from 'antd';
 import { geekblue } from '@ant-design/colors';
-
-import AuthForm from 'forms/auth-form';
 
 const { Text, Title } = Typography;
 
 const SignUpPage = () => {
   const history = useHistory();
-  const [result, redirectError, { signInWithGitHub, signInWithGoogle }] = useAuthRedirect();
   const [errors, setErrors] = useState({});
 
-  // this action will get be duplicated by the middleware but lets leave it here for now
-  // result also contains the token
-  if (result && result.user) {
-    history.push('/dashboard');
-  }
+  const { signInWithGitHub, signInWithGoogle } = useAuthRedirect(async (result) => {
+    if (result && result.user) {
+      if (result.additionalUserInfo.isNewUser) {
+        await createPersonalOrganization({ userID: result.user.uid });
+      }
 
-  // https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#getredirectresult
-  if (redirectError) {
+      history.push(dashboardPath());
+    }
+
+    // https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#getredirectresult
+    // if (redirectError) {
     // var errorCode = error.code;
     // var errorMessage = error.message;
     // var email = error.email;
     // var credential = error.credential;
-  }
+    // }
+  });
 
   const signupWithEmail = async ({ email, password }) => {
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      const user = await auth.createUserWithEmailAndPassword(email, password);
+
+      await createPersonalOrganization({ userID: user.uid });
 
       // TODO: create firestore user
 
       // send email verification
 
       // send them to the home page
-      history.push('/dashboard');
+      history.push(dashboardPath());
     } catch (error) {
       setErrors();
 
