@@ -27,6 +27,7 @@ module.exports = override(
     }
   }),
   addWebpackAlias({
+    ['colors']: path.resolve(__dirname, 'src/colors'),
     ['components']: path.resolve(__dirname, 'src/components'),
     ['fire']: path.resolve(__dirname, 'src/fire'),
     ['forms']: path.resolve(__dirname, 'src/components/forms'),
