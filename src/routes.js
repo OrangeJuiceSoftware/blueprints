@@ -21,6 +21,7 @@ export default [
   { path: '/b/:blueprintID/edit', page: BlueprintsEdit, isPrivate: true },
   { path: '/b/:blueprintID/view', page: BlueprintsView, isPrivate: true },
 
+  { path: '/o/new', page: OrganizationsView, isPrivate: true },
   { path: '/o/:organizationID', page: OrganizationsView, isPrivate: true },
 
   { path: '/settings/account', page: SettingsAccount, isPrivate: true },
@@ -31,6 +32,7 @@ export default [
 
 export const dashboardPath = () => '/';
 export const organizationPath = (organizationID) => `/o/${organizationID}`;
+export const organizationNewPath = () => 'o/new';
 export const blueprintEditPath = (blueprintID) => `/b/${blueprintID}/edit`;
 export const blueprintViewPath = (blueprintID) => `/b/${blueprintID}/view`;
 export const blueprintNewPath = () => '/b/new';

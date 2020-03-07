@@ -1,10 +1,11 @@
 import React from 'react';
 
-import { organizationPath } from 'routes';
+import { organizationPath, organizationNewPath } from 'routes';
 import { useOrganizations } from 'fire/hooks';
 
 import { Layout, Seo, Link } from 'components';
 import { Avatar, Button, Card, Col, Row, Typography, Icon } from 'antd';
+import { magenta } from '@ant-design/colors';
 
 const { Text, Title } = Typography;
 
@@ -16,7 +17,15 @@ const Dashboard = ({ user }) => {
       <Seo title={'Dashboard'}/>
 
       <Row type='flex' justify="space-between">
-        <Col span={12} style={{ padding: 24, height: 'calc(100vh - 40px)' }}>
+        <Col span={10} offset={7} style={{ padding: 24, height: 'calc(100vh - 40px)' }}>
+
+          <Row>
+            <Card style={{ background: magenta[0], borderColor: magenta[4] }} >
+              <Card.Meta title={'We are an indie shop!'}/>
+              <Text>Pls dontate some pesos</Text>
+            </Card>
+          </Row>
+
           {organizations && organizations.map(({ id, name }) => (
             <Row key={id}>
               <Link to={organizationPath(id)}>
@@ -26,16 +35,18 @@ const Dashboard = ({ user }) => {
               </Link>
             </Row>
           ))}
-        </Col>
 
+          <Row>
+            <Link to={organizationNewPath()}>
+              <Card>
+                Create new
+              </Card>
+            </Link>
+          </Row>
 
-        <Col span={6} style={{ marginTop: 24 }}>
-          <Card extra={<Icon type={'close'}/>}>
-            <Card.Meta title={'We are an indie shop!'}/>
-            <Text>Pls dontate some pesos</Text>
-          </Card>
         </Col>
       </Row>
+
     </Layout>
   );
 };

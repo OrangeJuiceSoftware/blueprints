@@ -35,7 +35,7 @@ export const Organization = ({ userID, name }) => {
     creatorID: userID,
     admins: [usersRef.doc(userID)],
     members: [usersRef.doc(userID)],
-    labels: ['testssdfs'],
+    labels: [],
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
 };
