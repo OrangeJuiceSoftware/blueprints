@@ -19,7 +19,7 @@ export default [
 
   { path: '/f/new', page: FilesNew, isPrivate: true },
   { path: '/f/:fileID/edit', page: FilesEdit, isPrivate: true },
-  { path: '//:fileID/view', page: FilesView, isPrivate: true },
+  { path: '/f/:fileID/view', page: FilesView, isPrivate: true },
 
   { path: '/p/new', page: ProjectsView, isPrivate: true },
   { path: '/p/:projectID', page: ProjectsView, isPrivate: true },

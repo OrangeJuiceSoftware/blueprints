@@ -90,9 +90,9 @@ const FilesView = ({ match, user }) => {
     </span>
   );
 
-  const labels = file.labels.map((label) => {
+  const labels = file.labels ? file.labels.map((label) => {
     return <Tag key={label} closable onClose={() => handleOnRemoveLabel(label)}>{label}</Tag>;
-  });
+  }) : [];
 
   return (
     <Layout>
