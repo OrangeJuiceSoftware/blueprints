@@ -5,7 +5,7 @@ import {
 
 export default (props) => {
   return (
-    <Link to={props.to}>
+    <Link {...props} to={props.to}>
       {props.children}
     </Link>
   );
