@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { projectPath } from './node_modules/routes';
+import { projectPath } from 'routes';
 
-import { useFile, useProject, useComments, useActivities } from './node_modules/fire/hooks';
-import { labelFile, unlabelFile, approveFile, createActivity, createComment, replyToComment } from './node_modules/fire/actions';
+import { useFile, useProject, useComments, useActivities } from 'fire/hooks';
+import { labelFile, unlabelFile, approveFile, createActivity, createComment, replyToComment } from 'fire/actions';
 
-import { CommentList, Layout, Previewer, Seo } from './node_modules/components';
+import { CommentList, Layout, Previewer, Seo } from 'components';
 import { Button, Card, Col, Icon, Input, PageHeader, Tag, Timeline, Typography, Row } from 'antd';
 import { Link } from 'react-router-dom';
 const { Text, Title } = Typography;

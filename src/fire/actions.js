@@ -1,51 +1,51 @@
 import firebase, { firestore } from '../services/firebase';
-import { blueprintsRef, usersRef, organizationsRef, Activity, Blueprint, Comment, Organization, Reply } from './schema';
+import { filesRef, usersRef, projectsRef, Activity, File, Comment, Project, Reply } from './schema';
 
-////////// Blueprints //////////
-export const createBlueprintFromTemplate = ({ templateID, userID, organizationID }) => {
+////////// Files //////////
+export const createFileFromTemplate = ({ templateID, userID, projectID }) => {
   const contentFromTemplate = 'built from template';
 
-  const newBlueprint = Blueprint({
+  const newFile = File({
     content: contentFromTemplate,
-    organizationRef: organizationsRef.doc(organizationID),
+    projectRef: projectsRef.doc(projectID),
     templateID,
     userID
   });
 
-  return blueprintsRef.add(newBlueprint);
+  return filesRef.add(newFile);
 };
 
-export const createBlueprintFromFile = ({ cloneID, userID, organizationID }) => {
+export const createFileFromFile = ({ cloneID, userID, projectID }) => {
   const contentFromFile = 'built from file';
 
-  const newBlueprint = Blueprint({
+  const newFile = File({
     content: contentFromFile,
-    organizationRef: organizationsRef.doc(organizationID),
+    projectRef: projectsRef.doc(projectID),
     cloneID,
     userID
   });
 
-  return blueprintsRef.add(newBlueprint);
+  return filesRef.add(newFile);
 };
 
-export const updateBlueprintContent = (id, content) => {
-  const blueprintRef = blueprintsRef.doc(id);
-  return blueprintRef.update({
+export const updateFileContent = (id, content) => {
+  const fileRef = filesRef.doc(id);
+  return fileRef.update({
     content
   });
 };
 
-export const labelBlueprint = (blueprintID, organizationID, label) => {
+export const labelFile = (fileID, projectID, label) => {
   const batch = firestore.batch();
 
-  const blueprintRef = blueprintsRef.doc(blueprintID);
-  const organizationRef = organizationsRef.doc(organizationID);
+  const fileRef = filesRef.doc(fileID);
+  const projectRef = projectsRef.doc(projectID);
 
-  batch.update(blueprintRef, {
+  batch.update(fileRef, {
     labels: firebase.firestore.FieldValue.arrayUnion(label)
   });
 
-  batch.update(organizationRef, {
+  batch.update(projectRef, {
     labels: firebase.firestore.FieldValue.arrayUnion(label)
   });
 
@@ -53,57 +53,57 @@ export const labelBlueprint = (blueprintID, organizationID, label) => {
   return batch.commit();
 };
 
-export const unlabelBlueprint = async (blueprintID, organizationID, label) => {
-  const blueprintRef = blueprintsRef.doc(blueprintID);
-  const organizationRef = organizationsRef.doc(organizationID);
+export const unlabelFile = async (fileID, projectID, label) => {
+  const fileRef = filesRef.doc(fileID);
+  const projectRef = projectsRef.doc(projectID);
 
   // No way to do this in a transaction???
-  const removeLabelPromise = await blueprintRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
+  const removeLabelPromise = await fileRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
 
   // limit to 1 so we don't unneccesarily query ourselves to $765432534.00
-  const existingBlueprintSnapshot = await blueprintsRef.where('labels', 'array-contains', label).limit(1).get();
+  const existingFileSnapshot = await filesRef.where('labels', 'array-contains', label).limit(1).get();
 
-  // if there is no blueprint left with that label... remove it from the organization
-  if (existingBlueprintSnapshot.size === 0) {
-    await organizationRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
+  // if there is no file left with that label... remove it from the project
+  if (existingFileSnapshot.size === 0) {
+    await projectRef.update({ labels: firebase.firestore.FieldValue.arrayRemove(label) });
   }
 
   return removeLabelPromise;
 };
 
-export const updateBlueprintTitle = (id, title) => {
-  const blueprintRef = blueprintsRef.doc(id);
-  return blueprintRef.update({
+export const updateFileTitle = (id, title) => {
+  const fileRef = filesRef.doc(id);
+  return fileRef.update({
     title
   });
 };
 
-export const approveBlueprint = (id, userID) => {
-  const blueprintRef = blueprintsRef.doc(id);
+export const approveFile = (id, userID) => {
+  const fileRef = filesRef.doc(id);
 
-  return blueprintRef.update({
+  return fileRef.update({
     approvals: firebase.firestore.FieldValue.arrayUnion(userID)
   });
 };
 
-////////// Organizations //////////
-export const createPersonalOrganization = ({ userID }) => {
-  const personalOrg = Organization({
+////////// Projects //////////
+export const createPersonalProject = ({ userID }) => {
+  const personalOrg = Project({
     userID,
     name: 'Personal'
   });
 
-  return organizationsRef.doc(userID).set(personalOrg, { merge: true });
+  return projectsRef.doc(userID).set(personalOrg, { merge: true });
 };
 
 ////////// Activity //////////
-export const createActivity = (blueprintID, params) => {
-  const blueprintRef = blueprintsRef.doc(blueprintID);
-  const activitiesRef = blueprintRef.collection('activities');
+export const createActivity = (fileID, params) => {
+  const fileRef = filesRef.doc(fileID);
+  const activitiesRef = fileRef.collection('activities');
 
   const newActivitiy = Activity({
     ...params,
-    blueprintRef
+    fileRef
   });
 
   return activitiesRef.add(newActivitiy);
@@ -111,26 +111,26 @@ export const createActivity = (blueprintID, params) => {
 
 
 ////////// Comments //////////
-export const createComment = (blueprintID, params) => {
-  const blueprintRef = blueprintsRef.doc(blueprintID);
-  const commentsRef = blueprintRef.collection('comments');
+export const createComment = (fileID, params) => {
+  const fileRef = filesRef.doc(fileID);
+  const commentsRef = fileRef.collection('comments');
 
   const newComment = Comment({
     ...params,
-    blueprintRef
+    fileRef
   });
 
   commentsRef.add(newComment);
 };
 
-export const replyToComment = (blueprintID, commentID, params) => {
-  const blueprintRef = blueprintsRef.doc(blueprintID);
-  const commentsRef = blueprintRef.collection('comments');
+export const replyToComment = (fileID, commentID, params) => {
+  const fileRef = filesRef.doc(fileID);
+  const commentsRef = fileRef.collection('comments');
   const commentRef = commentsRef.doc(commentID);
 
   const newReply = Reply({
     ...params,
-    blueprintRef,
+    fileRef,
     commentRef
   });
 

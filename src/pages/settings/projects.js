@@ -6,7 +6,7 @@ import Layout from 'layouts/settings-layout';
 import { Seo } from 'components';
 // import { Button, Icon, Menu } from 'antd';
 
-const SettingsOrganizations = () => {
+const SettingsProjects = () => {
 
 
   // be able to see their signin method
@@ -65,11 +65,11 @@ const SettingsOrganizations = () => {
 
   return (
     <Layout>
-      <Seo title={'Organizations'}/>
+      <Seo title={'Projects'}/>
 
-      <p>organizations</p>
+      <p>projects</p>
     </Layout>
   );
 };
 
-export default SettingsOrganizations;
+export default SettingsProjects;

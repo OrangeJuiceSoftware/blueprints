@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { dashboardPath } from 'routes';
 
-import { createPersonalOrganization } from 'fire/actions';
+import { createPersonalProject } from 'fire/actions';
 
 import { useAuthRedirect } from 'hooks';
 
@@ -24,7 +24,7 @@ const SignUpPage = () => {
   const { signInWithGitHub, signInWithGoogle } = useAuthRedirect(async (result) => {
     if (result && result.user) {
       if (result.additionalUserInfo.isNewUser) {
-        await createPersonalOrganization({ userID: result.user.uid });
+        await createPersonalProject({ userID: result.user.uid });
       }
 
       history.push(dashboardPath());
@@ -43,7 +43,7 @@ const SignUpPage = () => {
     try {
       const user = await auth.createUserWithEmailAndPassword(email, password);
 
-      await createPersonalOrganization({ userID: user.uid });
+      await createPersonalProject({ userID: user.uid });
 
       // TODO: create firestore user
 
@@ -74,7 +74,7 @@ const SignUpPage = () => {
 
       <Row style={{ marginTop: 50 }} justify={'center'} type={'flex'}>
         <Col>
-          <Title>Blueprints</Title>
+          <Title>Files</Title>
 
           <Button
             style={{ backgroundColor: 'black', fontSize: 20, color: 'white' }}

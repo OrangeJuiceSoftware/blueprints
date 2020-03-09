@@ -1,14 +1,14 @@
 import firebase, { firestore } from '../services/firebase';
 
-export const blueprintsRef = firestore.collection('blueprints');
+export const filesRef = firestore.collection('files');
 export const usersRef = firestore.collection('users');
-export const organizationsRef = firestore.collection('organizations');
+export const projectsRef = firestore.collection('projects');
 export const repliesGroupRef = firestore.collectionGroup('replies');
 export const activitiesGroupRef = firestore.collectionGroup('activities');
 
-export const Activity = ({ type, username, userID, blueprintRef, avatarURL }) => {
+export const Activity = ({ type, username, userID, fileRef, avatarURL }) => {
   return {
-    blueprintRef,
+    fileRef,
     type,
     userID,
     username,
@@ -17,10 +17,10 @@ export const Activity = ({ type, username, userID, blueprintRef, avatarURL }) =>
   };
 };
 
-export const Blueprint = ({ templateID = null, cloneID = null, content = null, organizationRef, userID }) => {
+export const File = ({ templateID = null, cloneID = null, content = null, projectRef, userID }) => {
   return {
     title: 'Untitled',
-    organizationRef,
+    projectRef,
     templateID,
     cloneID,
     userID,
@@ -29,7 +29,7 @@ export const Blueprint = ({ templateID = null, cloneID = null, content = null, o
   };
 };
 
-export const Organization = ({ userID, name }) => {
+export const Project = ({ userID, name }) => {
   return {
     name,
     creatorID: userID,
@@ -40,10 +40,10 @@ export const Organization = ({ userID, name }) => {
   };
 };
 
-export const Comment = ({ body, blueprintRef, authorID, avatarURL }) => {
+export const Comment = ({ body, fileRef, authorID, avatarURL }) => {
   return {
     body,
-    blueprintRef,
+    fileRef,
     authorID,
     avatarURL,
     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -52,11 +52,11 @@ export const Comment = ({ body, blueprintRef, authorID, avatarURL }) => {
   };
 };
 
-export const Reply = ({ body, commentRef, blueprintRef, authorID, avatarURL }) => {
+export const Reply = ({ body, commentRef, fileRef, authorID, avatarURL }) => {
   return {
     body,
     commentRef,
-    blueprintRef,
+    fileRef,
     authorID,
     avatarURL,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()

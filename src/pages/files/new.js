@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { fileEditPath } from './node_modules/routes';
+import { fileEditPath } from 'routes';
 
-import { useFiles, useProjects } from './node_modules/fire/hooks';
-import { createFileFromTemplate, createFileFromFile } from './node_modules/fire/actions';
+import { useFiles, useProjects } from 'fire/hooks';
+import { createFileFromTemplate, createFileFromFile } from 'fire/actions';
 
-import { useQuery } from './node_modules/hooks';
+import { useQuery } from 'hooks';
 
-import { Seo } from './node_modules/components';
-import Layout from './node_modules/layouts/default-layout';
+import { Seo } from 'components';
+import Layout from 'layouts/default-layout';
 import { Card, Col, Icon, PageHeader, Row } from 'antd';
 import groupBy from 'lodash/groupBy';
 

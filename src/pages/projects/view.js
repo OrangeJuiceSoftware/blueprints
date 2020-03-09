@@ -1,9 +1,9 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { blueprintNewPath, blueprintViewPath } from 'routes';
+import { fileNewPath, fileViewPath } from 'routes';
 
-import { useBlueprints, useOrganization } from 'fire/hooks';
+import { useFiles, useProject } from 'fire/hooks';
 
 import { Link, Seo } from 'components';
 import Layout from 'layouts/sidebar-layout';
@@ -11,15 +11,15 @@ import { Button, Card, Tag, Col, Icon, Menu, Table, Row, List, Typography } from
 
 const { Text } = Typography;
 
-const OrganizationView = ({ user, match }) => {
+const ProjectView = ({ user, match }) => {
   const history = useHistory();
-  const [organization, loadingOrganization, errorOrganization] = useOrganization(match.params.organizationID);
-  const [blueprints, loadingBlueprints, errorBlueprints] = useBlueprints([match.params.organizationID]);
+  const [project, loadingProject, errorProject] = useProject(match.params.projectID);
+  const [files, loadingFiles, errorFiles] = useFiles([match.params.projectID]);
 
   const generateSidebarItems = () => {
     return (
       <>
-        <Link to={blueprintNewPath()}>
+        <Link to={fileNewPath()}>
           <Button type="primary" shape="round" icon="plus" size={'large'} style={{ margin: 16 }}>
             New
           </Button>
@@ -28,7 +28,7 @@ const OrganizationView = ({ user, match }) => {
         <List
           // bordered
           size={'large'}
-          dataSource={organization && organization.labels}
+          dataSource={project && project.labels}
           renderItem={label => (
             <Row style={{ padding: '8px 16px' }}>
               <Tag key={label} style={{ padding: '4px 8px' }}>{label}</Tag>
@@ -40,7 +40,7 @@ const OrganizationView = ({ user, match }) => {
     );
   };
 
-  if (loadingOrganization) {
+  if (loadingProject) {
     return <p>loading</p>;
   }
 
@@ -66,7 +66,7 @@ const OrganizationView = ({ user, match }) => {
       //   sorter: (a, b) => a.address.length - b.address.length,
       //   sortOrder: sortedInfo.columnKey === 'address' && sortedInfo.order,
       //   ellipsis: true
-      render: approvals => approvals.length
+      render: approvals => approvals && approvals.length
     },
     {
       title: 'Created At',
@@ -93,11 +93,11 @@ const OrganizationView = ({ user, match }) => {
 
   return (
     <Layout sidebarItems={generateSidebarItems()}>
-      <Seo title={organization.name}/>
+      <Seo title={project.name}/>
 
-      <Table rowKey={'id'} columns={columns} dataSource={blueprints} onRow={(blueprint) => {
+      <Table rowKey={'id'} columns={columns} dataSource={files} onRow={(file) => {
         return {
-          onClick: () => history.push(blueprintViewPath(blueprint.id))
+          onClick: () => history.push(fileViewPath(file.id))
         };
       }} />
 
@@ -105,4 +105,4 @@ const OrganizationView = ({ user, match }) => {
   );
 };
 
-export default OrganizationView;
+export default ProjectView;

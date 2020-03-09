@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { organizationPath, organizationNewPath } from 'routes';
-import { useOrganizations } from 'fire/hooks';
+import { projectPath, projectNewPath } from 'routes';
+import { useProjects } from 'fire/hooks';
 
 import { Layout, Seo, Link } from 'components';
 import { Avatar, Button, Card, Col, Row, Typography, Icon } from 'antd';
@@ -11,7 +11,7 @@ import { neutral } from 'colors';
 const { Text, Title } = Typography;
 
 const Dashboard = ({ user }) => {
-  const [organizations, loadingOrganizations, errorOrganizations] = useOrganizations(user.uid);
+  const [projects, loadingProjects, errorProjects] = useProjects(user.uid);
 
   return (
     <Layout>
@@ -32,9 +32,9 @@ const Dashboard = ({ user }) => {
 
           <Title style={{ color: neutral[8], textAlign: 'center', marginTop: 32, marginBottom: 32 }}>Your Projects</Title>
 
-          {organizations && organizations.map(({ id, name }) => (
+          {projects && projects.map(({ id, name }) => (
             <Row key={id} style={{ marginBottom: 16 }}>
-              <Link to={organizationPath(id)}>
+              <Link to={projectPath(id)}>
                 <Card>
                   <Title level={3}>{name}</Title>
                   <Text>Some description text for this project</Text>
@@ -44,7 +44,7 @@ const Dashboard = ({ user }) => {
           ))}
 
           <Row>
-            <Link to={organizationNewPath()}>
+            <Link to={projectNewPath()}>
               <Card>
                 <Row type={'flex'} justify={'center'}>
                   <Icon type={'plus'} style={{ fontSize: 42, color: green[5] }}/>

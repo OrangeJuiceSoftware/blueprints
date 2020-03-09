@@ -2,37 +2,37 @@ import Dashboard from 'pages/dashboard';
 import Login from 'pages/login';
 import Signup from 'pages/signup';
 
-import BlueprintsEdit from 'pages/blueprints/edit';
-import BlueprintsNew from 'pages/blueprints/new';
-import BlueprintsView from 'pages/blueprints/view';
+import FilesEdit from 'pages/files/edit';
+import FilesNew from 'pages/files/new';
+import FilesView from 'pages/files/view';
 
-import OrganizationsView from 'pages/organizations/view';
+import ProjectsView from 'pages/projects/view';
 
 import SettingsAccount from 'pages/settings/account';
 import SettingsBilling from 'pages/settings/billing';
-import SettingsOrganizations from 'pages/settings/organizations';
+import SettingsProjects from 'pages/settings/projects';
 
 export default [
   { path: '/', page: Dashboard, isPrivate: true },
   { path: '/login', page: Login },
   { path: '/signup', page: Signup },
 
-  { path: '/b/new', page: BlueprintsNew, isPrivate: true },
-  { path: '/b/:blueprintID/edit', page: BlueprintsEdit, isPrivate: true },
-  { path: '/b/:blueprintID/view', page: BlueprintsView, isPrivate: true },
+  { path: '/f/new', page: FilesNew, isPrivate: true },
+  { path: '/f/:fileID/edit', page: FilesEdit, isPrivate: true },
+  { path: '//:fileID/view', page: FilesView, isPrivate: true },
 
-  { path: '/o/new', page: OrganizationsView, isPrivate: true },
-  { path: '/o/:organizationID', page: OrganizationsView, isPrivate: true },
+  { path: '/p/new', page: ProjectsView, isPrivate: true },
+  { path: '/p/:projectID', page: ProjectsView, isPrivate: true },
 
   { path: '/settings/account', page: SettingsAccount, isPrivate: true },
   { path: '/settings/billing', page: SettingsBilling, isPrivate: true },
-  { path: '/settings/organizations', page: SettingsOrganizations, isPrivate: true }
+  { path: '/settings/projects', page: SettingsProjects, isPrivate: true }
 ];
 
 
 export const dashboardPath = () => '/';
-export const organizationPath = (organizationID) => `/o/${organizationID}`;
-export const organizationNewPath = () => 'o/new';
-export const blueprintEditPath = (blueprintID) => `/b/${blueprintID}/edit`;
-export const blueprintViewPath = (blueprintID) => `/b/${blueprintID}/view`;
-export const blueprintNewPath = () => '/b/new';
+export const projectPath = (projectID) => `/p/${projectID}`;
+export const projectNewPath = () => 'p/new';
+export const fileEditPath = (fileID) => `/f/${fileID}/edit`;
+export const fileViewPath = (fileID) => `/f/${fileID}/view`;
+export const fileNewPath = () => '/f/new';

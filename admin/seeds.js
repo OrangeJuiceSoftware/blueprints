@@ -87,27 +87,31 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 
+const usersCollection = firestore.collection('users');
+const projectsCollection = firestore.collection('projects');
+const filesCollection = firestore.collection('files');
+
 const seedFunction = async () => {
   const ericUserID = 'tPkrVIi04NdKyoSrWEV95tCR9MK2';
 
-  const userRef = firestore.collection('users').doc(ericUserID);
+  const userRef = usersCollection.doc(ericUserID);
 
   userRef.set({
     username: 'ericstotle'
   });
 
   // for Personal
-  const personalOrganizationDoc = await firestore.collection('organizations').add({
+  const personalOrganizationDoc = await projectsCollection.add({
     name: 'Personal',
     creator: userRef,
-    admins: [firestore.collection('users').doc(ericUserID)],
-    members: [firestore.collection('users').doc(ericUserID)],
+    admins: [usersCollection.doc(ericUserID)],
+    members: [usersCollection.doc(ericUserID)],
     labels: ['Blueprints', 'Diagrams', 'Random', 'Demo']
   });
 
   [1, 2, 3, 4, 5].forEach(async (number) => {
-    const blueprintDoc = await firestore.collection('blueprints').add({
-      organizationRef: personalOrganizationDoc,
+    const fileDoc = await filesCollection.add({
+      projectRef: personalOrganizationDoc,
       userID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
       title: `Personal File ${number}`,
       content: sampleMarkdown,
@@ -117,10 +121,10 @@ const seedFunction = async () => {
     });
 
     [1, 2].forEach(async () => {
-      const activityDoc = await blueprintDoc.collection('activities').add({
+      const activityDoc = await fileDoc.collection('activities').add({
         type: 'APPROVAL',
         userRef: userRef,
-        blueprintRef:blueprintDoc,
+        fileRef:fileDoc,
         username: 'Eric Leong',
         avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
         createdAt: admin.firestore.FieldValue.serverTimestamp()
@@ -129,9 +133,9 @@ const seedFunction = async () => {
     });
 
     [1, 2, 3, 4, 5].forEach(async () => {
-      const commentRef = await blueprintDoc.collection('comments').add({
+      const commentRef = await fileDoc.collection('comments').add({
         body: 'some toxic feedback about this scumbags blueprint',
-        blueprintRef: blueprintDoc,
+        fileRef: fileDoc,
         authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
         avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -142,7 +146,7 @@ const seedFunction = async () => {
       [1, 2].forEach(async () => {
         await commentRef.collection('replies').add({
           body: 'This is the best way I think.',
-          blueprintRef: blueprintDoc,
+          fileRef: fileDoc,
           commentRef: commentRef,
           authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
           avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
@@ -155,18 +159,18 @@ const seedFunction = async () => {
 
 
   // FOR ORG
-  const ojOrganizationDoc = await firestore.collection('organizations').add({
+  const ojOrganizationDoc = await projectsCollection.add({
     name: 'Orange Juice',
     creator: userRef,
-    admins: [firestore.collection('users').doc(ericUserID)],
-    members: [firestore.collection('users').doc(ericUserID)],
+    admins: [usersCollection.doc(ericUserID)],
+    members: [usersCollection.doc(ericUserID)],
     labels: ['Juice']
   });
 
 
   [1, 2, 3, 4, 5].forEach(async (number) => {
-    const blueprintDoc = await firestore.collection('blueprints').add({
-      organizationRef: ojOrganizationDoc,
+    const fileDoc = await filesCollection.add({
+      projectRef: ojOrganizationDoc,
       userID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
       title: `OJ File ${number}`,
       content: sampleMarkdown,
@@ -176,9 +180,9 @@ const seedFunction = async () => {
     });
 
     [1, 2, 3, 4, 5].forEach(async () => {
-      const commentRef = await blueprintDoc.collection('comments').add({
+      const commentRef = await fileDoc.collection('comments').add({
         body: 'some toxic feedback about this scumbags blueprint',
-        blueprintRef: blueprintDoc,
+        fileRef: fileDoc,
         authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
         avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -189,7 +193,7 @@ const seedFunction = async () => {
       [1, 2].forEach(async () => {
         await commentRef.collection('replies').add({
           body: 'This is the best way I think.',
-          blueprintRef: blueprintDoc,
+          fileRef: fileDoc,
           commentRef: commentRef,
           authorID: 'P8VSjFSeduaoP3ELW3V6UuA9erR2',
           avatarURL: 'https://avatars1.githubusercontent.com/u/8476121?v=4',

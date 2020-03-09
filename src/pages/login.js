@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { dashboardPath } from 'routes';
 
-import { createPersonalOrganization } from 'fire/actions';
+import { createPersonalProject } from 'fire/actions';
 
 import { useAuthRedirect } from 'hooks';
 
@@ -24,7 +24,7 @@ const LoginPage = () => {
   const { signInWithGitHub, signInWithGoogle } = useAuthRedirect((result) => {
     if (result && result.user) {
       if (result.additionalUserInfo.isNewUser) {
-        createPersonalOrganization({ userID: result.user.uid });
+        createPersonalProject({ userID: result.user.uid });
       }
 
       history.push(dashboardPath());
@@ -72,7 +72,7 @@ const LoginPage = () => {
 
       <Row style={{ marginTop: 50 }} justify={'center'} type={'flex'}>
         <Col>
-          <Title>Blueprints</Title>
+          <Title>Files</Title>
 
           <Button
             style={{ backgroundColor: 'black', fontSize: 20, color: 'white' }}
