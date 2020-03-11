@@ -10,7 +10,7 @@ import { useQuery } from 'hooks';
 
 import { Seo } from 'components';
 import Layout from 'layouts/default-layout';
-import { Card, Col, Icon, PageHeader, Row } from 'antd';
+import { Card, Col, Icon, PageHeader, Row, Select } from 'antd';
 import groupBy from 'lodash/groupBy';
 
 const templateIDs = [1, 2, 3, 4, 5, 6, 7];
@@ -20,8 +20,8 @@ const FilesNew = ({ user }) => {
   const query = useQuery();
 
   const [projects, loadingProjects, errorProjects] = useProjects(user.uid);
-  const [files, loading, error] = useFiles(projects && projects.map(({ id }) => id));
-  const [selectedProject, setSelectedProject] = useState();
+  // const [files, loading, error] = useFiles(projects && projects.map(({ id }) => id));
+  const [selectedProjectID, setSelectedProject] = useState();
 
   const projectsMap = groupBy(projects, 'id');
 
@@ -29,18 +29,16 @@ const FilesNew = ({ user }) => {
     // hack to get around using exhaustive deps array. projects is an object.... always not equal to last
     if (!loadingProjects) {
       if (query.o) {
-        setSelectedProject(projectsMap[query.o]);
+        setSelectedProject(projectsMap[query.o].id);
       } else {
-        setSelectedProject(projects[0]);
+        setSelectedProject(projects[0].id);
       }
     }
   }, [loadingProjects, query.o]);
 
-  console.log(selectedProject);
-
   const handleTemplateClick = async (templateID) => {
     try {
-      const docRef = await createFileFromTemplate({ userID: user.uid, projectID: selectedProject.id, templateID });
+      const docRef = await createFileFromTemplate({ userID: user.uid, projectID: selectedProjectID, templateID });
       history.push(fileEditPath(docRef.id));
     } catch (error) {
       console.log(error);
@@ -49,19 +47,34 @@ const FilesNew = ({ user }) => {
 
   const handleFileClick = async (cloneID) => {
     try {
-      const docRef = await createFileFromFile({ userID: user.uid, projectID: selectedProject.id, cloneID });
+      const docRef = await createFileFromFile({ userID: user.uid, projectID: selectedProjectID, cloneID });
       history.push(fileEditPath(docRef.id));
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleSelectProject = (projectID) => {
+    setSelectedProject(projectID);
+  };
+
+  if (loadingProjects) {
+    return <>loading projects</>;
+  }
+
   return (
     <Layout style={{ padding: '0 64px' }}>
       <Seo title={'Create'}/>
 
-      <Row gutter={[24, 48]} style={{ margin: 24 }}>
+      <Row style={{ margin: 24 }}>
+        <Select value={selectedProjectID} style={{ width: 120 }} onChange={handleSelectProject}>
+          {projects.map((project) => (
+            <Select.Option key={project.id} value={project.id}>{project.name}</Select.Option>
+          ))}
+        </Select>
+      </Row>
 
+      <Row gutter={[24, 48]} style={{ margin: 24 }}>
         <PageHeader
           style={{
             margin: '24px 0',
@@ -70,14 +83,6 @@ const FilesNew = ({ user }) => {
           title="Templates"
           subTitle="Create from a template"
         />
-
-        {/* This is the blank placeholder */}
-        <Col span={4}>
-          <p>Blank</p>
-          <Card hoverable onClick={() => handleTemplateClick({ templateID: 0 })}>
-            <Icon type={'plus'}/>
-          </Card>
-        </Col>
 
         {templateIDs.map((templateID) => (
           <Col key={templateID} span={4}>
@@ -91,9 +96,17 @@ const FilesNew = ({ user }) => {
           </Col>
         ))}
 
+        <Col span={4}>
+          <p>Blank</p>
+          <Card hoverable onClick={() => handleTemplateClick({ templateID: 0 })}>
+            <Icon type={'plus'}/>
+          </Card>
+        </Col>
+
       </Row>
 
-      <Row gutter={[24, 48]} style={{ margin: 24 }}>
+      {/* @V2 */}
+      {/* <Row gutter={[24, 48]} style={{ margin: 24 }}>
 
         <PageHeader
           style={{
@@ -118,7 +131,7 @@ const FilesNew = ({ user }) => {
           </Col>
         ))}
 
-      </Row>
+      </Row> */}
 
     </Layout>
   );

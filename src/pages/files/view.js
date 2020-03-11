@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { projectPath } from 'routes';
+import { projectPath, fileEditPath } from 'routes';
 
 import { useFile, useProject, useComments, useActivities } from 'fire/hooks';
 import { labelFile, unlabelFile, approveFile, createActivity, createComment, replyToComment } from 'fire/actions';
 
 import { CommentList, Layout, Previewer, Seo } from 'components';
-import { Button, Card, Col, Icon, Input, PageHeader, Tag, Timeline, Typography, Row } from 'antd';
+import { Breadcrumb, Button, Card, Col, Icon, Input, PageHeader, Tag, Timeline, Typography, Row } from 'antd';
 import { Link } from 'react-router-dom';
 const { Text, Title } = Typography;
 
@@ -57,79 +57,89 @@ const FilesView = ({ match, user }) => {
     });
   };
 
-  const handleOnAddLabel = (newLabel) => {
-    labelFile(fileID, file.projectRef.id, newLabel);
-    setNewLabel('');
-    setInputVisible(false);
-  };
+  // @V2
+  // const handleOnAddLabel = (newLabel) => {
+  //   labelFile(fileID, file.projectRef.id, newLabel);
+  //   setNewLabel('');
+  //   setInputVisible(false);
+  // };
 
-  const handleOnRemoveLabel = (label) => {
-    unlabelFile(fileID, file.projectRef.id, label);
-  };
+  // const handleOnRemoveLabel = (label) => {
+  //   unlabelFile(fileID, file.projectRef.id, label);
+  // };
 
-  const newLabelForm = (
-    <span key={'newFrom'}>
-      {inputVisible && (
-        <Input
-          type="text"
-          size="small"
-          style={{ width: 78 }}
-          value={newLabel}
-          onChange={(e) => setNewLabel(e.target.value)}
-          onBlur={() => handleOnAddLabel(newLabel)}
-          onPressEnter={() => handleOnAddLabel(newLabel)}
-        />
-      )}
+  // const newLabelForm = (
+  //   <span key={'newFrom'}>
+  //     {inputVisible && (
+  //       <Input
+  //         type="text"
+  //         size="small"
+  //         style={{ width: 78 }}
+  //         value={newLabel}
+  //         onChange={(e) => setNewLabel(e.target.value)}
+  //         onBlur={() => handleOnAddLabel(newLabel)}
+  //         onPressEnter={() => handleOnAddLabel(newLabel)}
+  //       />
+  //     )}
 
-      {!inputVisible && (
-        <Tag key={'newButton'} onClick={() => setInputVisible(true)} style={{ background: '#fff', borderStyle: 'dashed' }}>
-          <Icon type="plus" /> New Tag
-        </Tag>
-      )}
+  //     {!inputVisible && (
+  //       <Tag key={'newButton'} onClick={() => setInputVisible(true)} style={{ background: '#fff', borderStyle: 'dashed' }}>
+  //         <Icon type="plus" /> New Tag
+  //       </Tag>
+  //     )}
 
-    </span>
-  );
+  //   </span>
+  // );
 
-  const labels = file.labels ? file.labels.map((label) => {
-    return <Tag key={label} closable onClose={() => handleOnRemoveLabel(label)}>{label}</Tag>;
-  }) : [];
+  // const labels = file.labels ? file.labels.map((label) => {
+  //   return <Tag key={label} closable onClose={() => handleOnRemoveLabel(label)}>{label}</Tag>;
+  // }) : [];
 
   return (
     <Layout>
       <Seo title={file.title}/>
 
       <PageHeader
-        style={{ border: '1px solid rgb(235, 237, 240)' }}
+        style={{ backgroundColor: 'white' }}
         title={
-          <>
-            {project && <Link to={projectPath(project.id)}>{project.name}</Link>}
-            <Title>{file.title}</Title>
-          </>
+          <Breadcrumb>
+            <Breadcrumb.Item>{project && <Link to={projectPath(project.id)}>{project.name}</Link>}</Breadcrumb.Item>
+            <Breadcrumb.Item>{file.title}</Breadcrumb.Item>
+          </Breadcrumb>
         }
-        tags={[
-          ...labels,
-          newLabelForm
-        ]}
+        // tags={[
+        //   ...labels,
+        //   newLabelForm
+        // ]}
         extra={[
-          <Button key={'1'} type="primary" icon="search" onClick={handleOnApproval}>
+          <Link key={'edit'} to={fileEditPath(fileID)} >
+            <Button type="primary" icon="search">
+              Edit
+            </Button>
+          </Link>,
+          <Button key={'approve'} type="primary" icon="search" onClick={handleOnApproval}>
               Approve
           </Button>
         ]}
       />
 
-      <Col span={16}>
-        <Row>
-          <Card style={{}}>
+      <Row>
+        <Col span={16} style={{ padding: 12, height: 'calc(100vh - 104px)', overflow: 'auto' }}>
+          <Card>
             <Previewer markdown={file && file.content}/>
           </Card>
-        </Row>
+        </Col>
 
-        <Row>
-          <CommentList comments={comments} onComment={handleOnComment} onReply={handleOnReply}/>
-        </Row>
-      </Col>
+        <Col span={8} style={{ padding: 12, height: 'calc(100vh - 104px)', overflow: 'auto' }}>
+          <Row>
+            <CommentList comments={comments} onComment={handleOnComment} onReply={handleOnReply}/>
+          </Row>
+        </Col>
+      </Row>
 
-      <Col span={8}>
+
+      {/* @V2 */}
+      {/* <Col span={8}>
         <Timeline>
           {activities && activities.map(({ id, type, createdAt, username }) => (
             <Timeline.Item key={id} color={type === 'APPROVAL' ? 'green': 'gray'}>
@@ -142,7 +152,7 @@ const FilesView = ({ match, user }) => {
             </Timeline.Item>
           ))}
         </Timeline>
-      </Col>
+      </Col> */}
 
     </Layout>
   );

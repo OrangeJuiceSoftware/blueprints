@@ -22,7 +22,7 @@ const ProjectView = ({ user, match }) => {
   }
 
   return (
-    <Layout>
+    <Layout style={{ backgroundColor: 'white' }}>
       <Seo title={project.name}/>
 
       <Row style={{ backgroundColor: 'white', paddingTop: 16, paddingBottom: 16 }}>
@@ -36,7 +36,8 @@ const ProjectView = ({ user, match }) => {
 
       <Row style={{ backgroundColor: 'white' }}>
         <Col span={3}>
-          <List
+          {/* @V2 */}
+          {/* <List
             size={'large'}
             dataSource={project && project.labels}
             renderItem={label => (
@@ -44,7 +45,7 @@ const ProjectView = ({ user, match }) => {
                 <Tag key={label} style={{ padding: '4px 8px' }}>{label}</Tag>
               </Row>
             )}
-          />
+          /> */}
         </Col>
 
         <Col span={18}>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AceEditor from 'react-ace';
+// https://github.com/ajaxorg/ace-builds/tree/master/src-noconflict
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/keybinding-vscode';
 
-import { useFile } from 'fire/hooks';
+
+import { useFile, useProject } from 'fire/hooks';
 import { updateFileContent, updateFileTitle } from 'fire/actions';
 
 import { Layout, Previewer, Seo } from 'components';
@@ -12,6 +15,7 @@ import { Button, Col, PageHeader, Modal, Input } from 'antd';
 const FilesEdit = ({ match, user }) => {
   const fileID = match.params.fileID;
   const [file, loading, error] = useFile(fileID);
+  const [project, loadingProject, errorProject] = useProject(file && file.projectRef.id);
 
   const [showPreview, setShowPreview] = useState(false);
   const [localMarkdown, setLocalMarkdown] = useState();
@@ -45,6 +49,7 @@ const FilesEdit = ({ match, user }) => {
 
       <PageHeader
         style={{
+          backgroundColor: 'white',
           border: '1px solid rgb(235, 237, 240)'
         }}
         title={<Input onBlur={(e) => updateFileTitle(fileID, e.target.value)} defaultValue={file.title}/>}
@@ -67,6 +72,7 @@ const FilesEdit = ({ match, user }) => {
           onChange={updateFile}
           debounceChangePeriod={750}
           showPrintMargin={false}
+          keyboardHandler={'vscode'}
           theme={'github'}
           value={localMarkdown}
           onLoad={() => {

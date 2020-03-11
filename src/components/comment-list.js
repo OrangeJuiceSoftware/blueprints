@@ -24,9 +24,7 @@ const Editor = ({ onSubmit, submitting }) => {
         <Input.TextArea rows={4} onChange={(e) => setFormValue(e.target.value)} value={formValue} />
       </Form.Item>
       <Form.Item>
-        <Button htmlType="submit" loading={submitting} onClick={() => onSubmit(formValue)} type="primary">
-        Add Comment
-        </Button>
+        <Button htmlType="submit" loading={submitting} onClick={() => onSubmit(formValue)} type="primary">Comment</Button>
       </Form.Item>
     </div>
   );
@@ -38,10 +36,15 @@ const Editor = ({ onSubmit, submitting }) => {
 
 const CommentsList = ({ comments, onComment, onReply }) => {
   return (
-    <Card>
+    <div style={{ backgroundColor: 'white', padding: 16 }}>
       <List
+        locale={{
+          emptyText: (
+            <span>
+            </span>
+          )
+        }}
         className="comment-list"
-        header={'Comments'}
         itemLayout="horizontal"
         dataSource={comments}
         renderItem={comment => (
@@ -70,7 +73,7 @@ const CommentsList = ({ comments, onComment, onReply }) => {
       />
 
       <Editor onSubmit={onComment}/>
-    </Card>
+    </div>
   );
 };
 
