@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import AceEditor from 'react-ace';
+// https://github.com/ajaxorg/ace-builds/tree/master/src-noconflict
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/keybinding-vscode';
 
-import { firestore } from 'services/firebase';
-import { useDocumentDataOnce } from 'react-firebase-hooks/firestore';
+
+import { useFile, useProject } from 'fire/hooks';
+import { updateFileContent, updateFileTitle } from 'fire/actions';
 
 import { Layout, Previewer, Seo } from 'components';
-import { Button, Col, PageHeader, Modal } from 'antd';
+import { Button, Col, PageHeader, Modal, Input } from 'antd';
 
-const Documents = ({ match, user }) => {
-  const documentRef = firestore.collection('files').doc(match.params.documentID);
-  const [document, loading, error] = useDocumentDataOnce(documentRef);
+const FilesEdit = ({ match, user }) => {
+  const fileID = match.params.fileID;
+  const [file, loading, error] = useFile(fileID);
+  const [project, loadingProject, errorProject] = useProject(file && file.projectRef.id);
 
   const [showPreview, setShowPreview] = useState(false);
   const [localMarkdown, setLocalMarkdown] = useState();
-
 
   const openPreview = () => {
     setShowPreview(true);
@@ -25,12 +28,11 @@ const Documents = ({ match, user }) => {
     setShowPreview(false);
   };
 
-  const updateDocument = async (newMarkdown) => {
+  const updateFile = async (newMarkdown) => {
     try {
       setLocalMarkdown(newMarkdown);
-      await documentRef.update({
-        markdown: newMarkdown
-      });
+
+      await updateFileContent(fileID, newMarkdown);
     } catch (error) {
       console.log(error);
     }
@@ -43,21 +45,20 @@ const Documents = ({ match, user }) => {
 
   return (
     <Layout>
-      <Seo title={'Documents'}/>
+      <Seo title={file.title}/>
 
       <PageHeader
         style={{
+          backgroundColor: 'white',
           border: '1px solid rgb(235, 237, 240)'
         }}
-        title="Title"
-        subTitle="This is a subtitle"
+        title={<Input onBlur={(e) => updateFileTitle(fileID, e.target.value)} defaultValue={file.title}/>}
         extra={[
           <Button key={'preview'} type="secondary" icon="search" onClick={openPreview}>
               Preview
           </Button>,
-
           <Button key={'review'} type="primary" onClick={openPreview}>
-            Review
+              Review
           </Button>
         ]}
       />
@@ -68,14 +69,15 @@ const Documents = ({ match, user }) => {
           fontSize={14}
           highlightActiveLine={true}
           mode={'markdown'}
-          onChange={updateDocument}
+          onChange={updateFile}
           debounceChangePeriod={750}
           showPrintMargin={false}
+          keyboardHandler={'vscode'}
           theme={'github'}
           value={localMarkdown}
           onLoad={() => {
             // no crazzzy about this. Can't decide if the editor should fire up the preview or the component render should
-            setLocalMarkdown(document.markdown);
+            setLocalMarkdown(file.content);
           }}
           setOptions={{
             // tabSize: 2
@@ -102,4 +104,4 @@ const Documents = ({ match, user }) => {
   );
 };
 
-export default Documents;
+export default FilesEdit;

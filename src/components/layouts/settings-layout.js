@@ -8,7 +8,7 @@ const { Content } = Layout;
 
 const routes = [
   { id: 'account', route: '/settings/account', displayText: 'Account', icon: 'smile' },
-  { id: 'organization', route: '/settings/organizations', displayText: 'Organizations', icon: 'team' },
+  { id: 'project', route: '/settings/projects', displayText: 'Projects', icon: 'team' },
   { id: 'billing', route: '/settings/billing', displayText: 'Billing', icon: 'team' }
 ];
 

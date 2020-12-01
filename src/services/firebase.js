@@ -22,12 +22,7 @@ try {
   }
 }
 
-const auth = firebase.auth();
-const firestore = firebase.firestore();
-
 export default firebase;
-export {
-  auth,
-  firestore
-};
+export const auth = firebase.auth();
+export const firestore = firebase.firestore();
 

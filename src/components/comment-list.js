@@ -1,11 +1,10 @@
-import React from 'react';
-import { useCollection } from 'react-firebase-hooks/firestore';
+import React, { useState } from 'react';
 
-import { Avatar, Button, Card, Col, Comment, Form, Input, List, Skeleton } from 'antd';
+import { Avatar, Button, Card, Col, Comment, Form, Input, List, Row, Skeleton } from 'antd';
 
-////////////////////////////
-///// Local Components /////
-////////////////////////////
+//////////////////////////////////
+///// Start Local Components /////
+//////////////////////////////////
 const LoadingComments = () => (
   <Card>
     <List itemLayout="vertical" size="large" dataSource={[3, 1]} renderItem={item => (
@@ -16,96 +15,65 @@ const LoadingComments = () => (
   </Card>
 );
 
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
-  <div>
-    <Form.Item>
-      <Input.TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-        Add Comment
-      </Button>
-    </Form.Item>
-  </div>
-);
-
-const NestedComments = ({ commentsRef, commentRef, onCreate }) => {
-  const [commentsQuerySnapshot, loadingComments, errorComments] = useCollection(commentsRef.where('parentRef', '==', commentRef));
-
-  if (loadingComments) {
-    return <LoadingComments/>;
-  }
-
-  const commentsData = commentsQuerySnapshot.docs.map((commentSnapshot) => {
-    const commentData = commentSnapshot.data();
-    commentData.ref = commentSnapshot.ref;
-
-    return commentData;
-  });
-
-  return (<>
-    {commentsData.length && commentsData.map((item) => (
-      <Comment
-        key={item.ref.path}
-        actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
-        author={item.authorID}
-        avatar={item.avatarURL}
-        content={item.content}
-        datetime={item.datetime}
-      >
-        <NestedComments commentsRef={commentsRef} commentRef={item.ref}/>
-      </Comment>
-    ))}
-  </>);
-};
-
-////////////////////////////
-///// Local Components /////
-////////////////////////////
-
-
-const CommentsList = ({ commentsRef, commonCreate }) => {
-  const [commentsQuerySnapshot, loadingComments, errorComments] = useCollection(commentsRef.where('parentRef', '==', null));
-
-  // waiting on react suspense to do this part better
-  if (errorComments) {
-    return <p>there was an error loading comments</p>;
-  }
-
-  if(loadingComments) {
-    return <LoadingComments/>;
-  }
-
-  const commentsData = commentsQuerySnapshot.docs.map((commentSnapshot) => {
-    const commentData = commentSnapshot.data();
-    commentData.ref = commentSnapshot.ref;
-
-    return commentData;
-  });
+const Editor = ({ onSubmit, submitting }) => {
+  const [formValue, setFormValue] = useState('');
 
   return (
-    <Card>
+    <div>
+      <Form.Item>
+        <Input.TextArea rows={4} onChange={(e) => setFormValue(e.target.value)} value={formValue} />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit" loading={submitting} onClick={() => onSubmit(formValue)} type="primary">Comment</Button>
+      </Form.Item>
+    </div>
+  );
+};
+
+////////////////////////////////
+///// End Local Components /////
+////////////////////////////////
+
+const CommentsList = ({ comments, onComment, onReply }) => {
+  return (
+    <div style={{ backgroundColor: 'white', padding: 16 }}>
       <List
+        locale={{
+          emptyText: (
+            <span>
+            </span>
+          )
+        }}
         className="comment-list"
-        header={'Comments'}
         itemLayout="horizontal"
-        dataSource={commentsData}
-        renderItem={item => (
-          <List.Item>
+        dataSource={comments}
+        renderItem={comment => (
+          <li>
             <Comment
-              actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
-              author={item.authorID}
-              avatar={item.avatarURL}
-              content={item.content}
-              datetime={item.datetime}
+              // maybe add some emojis
+              // actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
+              author={comment.authorID}
+              avatar={comment.avatarURL}
+              content={comment.body}
+              datetime={comment.datetime}
             >
-              <NestedComments commentsRef={commentsRef} commentRef={item.ref}/>
+              {comment.replies.map((reply) => (
+                <Comment
+                  key={reply.id}
+                  author={reply.authorID}
+                  avatar={reply.avatarURL}
+                  content={reply.body}
+                  datetime={reply.datetime}
+                />
+              ))}
             </Comment>
-          </List.Item>
+            <Editor onSubmit={(body) => onReply(comment.id, body)}/>
+          </li>
         )}
       />
-      <Editor/>
-    </Card>
+
+      <Editor onSubmit={onComment}/>
+    </div>
   );
 };
 
